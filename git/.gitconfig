@@ -1,0 +1,24 @@
+# Use the following in your home dir's .gitconfig file to source from this one
+#
+# [include]
+#   path = ~/.config/git/.gitconfig
+
+[user]
+  name = Andres Osorio
+  email = andres.osoriogr@gmail.com
+[includeIf "gitdir:~/dev/work/ndg/"]
+  path = ~/.config/git/work.ndg.gitconfig
+[alias]
+  co = checkout
+  ci = commit
+  st = status
+  br = branch
+  wt = worktree
+  lg = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  fp = fetch --prune
+  prune-gone = "!git branch -vv | awk '/: gone]/ {print $1}' | xargs git branch -D"
+[init]
+  defaultBranch = main
+[core]
+  autocrlf = input
+  excludesfile = ~/.config/git/.gitignore_global

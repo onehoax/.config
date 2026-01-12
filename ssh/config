@@ -1,0 +1,21 @@
+# Use the following in your home dir's .gitconfig file to source from this one
+#
+# Include ~/.config/ssh/config
+
+# BitBucket 
+Host bitbucket.org
+  Hostname bitbucket.org
+  AddressFamily inet
+  User git
+  IdentityFile ~/.ssh/bitbucket/bitbucket_key
+
+# GitLab 
+Host gitlab.ndgdevelopment.com
+  Hostname gitlab.ndgdevelopment.com
+  Port 2222
+  User git
+  IdentityFile ~/.ssh/gitlab/gitlab_key
+
+# Default 
+Host *
+  IdentityFile ~/.ssh/default/default_key
