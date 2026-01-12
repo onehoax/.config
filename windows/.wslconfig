@@ -1,1 +1,5 @@
-/mnt/c/Users/andres/.wslconfig
+[wsl2]
+processors=8
+swap=4194304000
+networkingMode=Mirrored
+memory=16777216000

@@ -1,1 +1,215 @@
-/mnt/c/Users/andres/AppData/Roaming/Code/User/settings.json
+{
+  // ############################## GENERAL ##############################
+
+  "editor.minimap.enabled": false,
+  "zenMode.restore": false,
+  "zenMode.hideLineNumbers": false,
+  "zenMode.hideStatusBar": false,
+  "files.autoSave": "off",
+  "explorer.sortOrder": "type",
+  "editor.tabCompletion": "on",
+  "git.openRepositoryInParentFolders": "never",
+  "terminal.integrated.letterSpacing": 1,
+  "editor.indentSize": "tabSize",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "workbench.editor.openPositioning": "right",
+  "workbench.iconTheme": "file-icons",
+  "explorer.confirmDragAndDrop": false,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "security.workspace.trust.untrustedFiles": "open",
+  "svg.preview.transparencyGrid": false,
+  "svg.preview.boundingBox": false,
+  "editor.occurrencesHighlight": "off",
+  "chat.commandCenter.enabled": false,
+  "editor.renderWhitespace": "none",
+  "breadcrumbs.enabled": false,
+  "debug.javascript.codelens.npmScripts": "never",
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.renderLineHighlight": "none",
+  "editor.matchBrackets": "never",
+  "editor.guides.indentation": false,
+  "workbench.editor.revealIfOpen": true,
+  "editor.rulers": [120],
+  "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?",
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "workbench.editor.empty.hint": "hidden",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "explorer.confirmDelete": false,
+  "chat.mcp.gallery.enabled": false,
+  // "window.zoomLevel": 1,
+
+  // ############################## FORMAT ##############################
+
+  // GENERAL
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.printWidth": 120,
+  "files.trimTrailingWhitespace": true,
+
+  // BASH
+  "[shellscript]": {
+    "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode"
+  },
+
+  // DOCKER
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+  },
+
+  // ############################## INTELLISENSE ##############################
+
+  // CSS
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+
+  // ESLINT
+  "eslint.useFlatConfig": true,
+
+  // ############################## VIM ##############################
+  "vim.incsearch": true,
+  "vim.useSystemClipboard": true,
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.highlightedyank.enable": true,
+  "vim.textwidth": 120,
+  "vim.leader": "<space>",
+  "vim.handleKeys": {
+    "<C-s>": false,
+    "<C-z>": false,
+    "<C-f>": false,
+    "<C-p>": false,
+    "<C-n>": false
+  },
+  "vim.normalModeKeyBindingsNonRecursive": [
+    // MISC
+    {
+      "before": ["leader", "w"],
+      "commands": ["workbench.action.files.save"]
+    },
+    {
+      "before": ["leader", "W"],
+      "commands": ["workbench.action.files.saveFiles"]
+    },
+    {
+      "before": ["<leader>", "q"],
+      "commands": ["workbench.action.closeActiveEditor"]
+    },
+    {
+      "before": ["<leader>", "Q"],
+      "commands": ["workbench.action.files.save", "workbench.action.closeActiveEditor"]
+    },
+    {
+      "before": ["<leader>", "e"],
+      "commands": ["workbench.action.toggleSidebarVisibility"]
+    },
+    // BOOKMARKS
+    {
+      "before": ["<leader>", "b", "t"],
+      "commands": ["bookmarks.toggle"]
+    },
+    {
+      "before": ["<leader>", "b", "l"],
+      "commands": ["bookmarks.list"]
+    },
+    // CLEAR
+    {
+      "before": ["<leader>", "c", "h"],
+      "commands": [":nohl"]
+    },
+
+    // Keep vscode's undo/redo functionality; the extions undoes several actions intead of 1
+    {
+      "before": ["u"],
+      "commands": ["undo"]
+    },
+    {
+      "before": ["<C-r>"],
+      "commands": ["redo"]
+    }
+  ],
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["<C-v>"],
+      "commands": []
+    }
+  ],
+  "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": [">"],
+      "after": [">", "g", "v"]
+    },
+    {
+      "before": ["<"],
+      "after": ["<", "g", "v"]
+    },
+    // paste without overriding the current register
+    {
+      "before": ["p"],
+      "after": ["p", "g", "v", "y"]
+    },
+    // `$` includes the newline in visual mode bc of vscode line representation
+    // `g_` moves to the last non-whitespace character of the line, excluding the newline
+    // This makes v$ behave like vg_, avoiding the newline in selection.
+    {
+      "before": ["$"],
+      "after": ["g", "_"]
+    }
+  ],
+  // To improve performance
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1
+  },
+
+  // ############################## PEACOCK ##############################
+  "peacock.favoriteColors": [
+    {
+      "name": "Angular Red",
+      "value": "#dd0531"
+    },
+    {
+      "name": "Azure Blue",
+      "value": "#007fff"
+    },
+    {
+      "name": "JavaScript Yellow",
+      "value": "#f9e64f"
+    },
+    {
+      "name": "Mandalorian Blue",
+      "value": "#1857a4"
+    },
+    {
+      "name": "Node Green",
+      "value": "#215732"
+    },
+    {
+      "name": "React Blue",
+      "value": "#61dafb"
+    },
+    {
+      "name": "Something Different",
+      "value": "#832561"
+    },
+    {
+      "name": "Svelte Orange",
+      "value": "#ff3d00"
+    },
+    {
+      "name": "Vue Green",
+      "value": "#42b883"
+    }
+  ],
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "remote.autoForwardPortsSource": "hybrid",
+  "git.blame.editorDecoration.enabled": false,
+  "git.blame.statusBarItem.enabled": true,
+  "terminal.integrated.initialHint": false
+}
