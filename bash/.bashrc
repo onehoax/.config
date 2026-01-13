@@ -36,6 +36,15 @@ if [ -f ~/.config/bash/.bash_aliases ]; then
   . ~/.config/bash/.bash_aliases
 fi
 
+# enable programmable completion features
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
 export PATH="$HOME/.local/bin:$PATH"
 export WHOME="/mnt/c/Users/andres"
 export EDITOR=vim
