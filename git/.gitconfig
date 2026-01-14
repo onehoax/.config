@@ -22,3 +22,7 @@
 [core]
   autocrlf = input
   excludesfile = ~/.config/git/.gitignore_global
+[merge]
+	ff = only
+[pull]
+	ff = only
