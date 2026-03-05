@@ -2,4 +2,4 @@
 processors=8
 swap=4194304000
 networkingMode=Mirrored
-memory=16777216000
+memory=20971520000
