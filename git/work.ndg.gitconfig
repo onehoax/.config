@@ -1,4 +1,2 @@
 [user]
   email = andres@ndgcommunications.com
-[core]
-  sshCommand = ssh -i ~/.ssh/github/github_work_key -o IdentitiesOnly=yes

@@ -21,7 +21,6 @@
   defaultBranch = main
 [core]
   autocrlf = input
-  sshCommand = ssh -i ~/.ssh/default/default_key -o IdentitiesOnly=yes
   excludesfile = ~/.config/git/.gitignore_global
 [merge]
 	ff = only
