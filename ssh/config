@@ -25,6 +25,7 @@ IdentityFile ~/.ssh/gitlab/gitlab_key
 Host https://github.com
 Hostname github.com
 User git
+IdentityFile ~/.ssh/default/default_key.pub
 IdentityFile ~/.ssh/github/github_work_key
 
 # Default
