@@ -60,6 +60,11 @@
     "editor.defaultFormatter": "ms-azuretools.vscode-containers",
   },
 
+  // PRISMA
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma",
+  },
+
   // ############################## INTELLISENSE ##############################
 
   // CSS
@@ -208,4 +213,10 @@
       "value": "#42b883",
     },
   ],
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+  },
 }
