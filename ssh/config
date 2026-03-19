@@ -20,12 +20,19 @@ Port 2222
 User git
 IdentityFile ~/.ssh/gitlab/gitlab_key
 
-# GitHub
+# GitHub Work
 
-Host github.com
+Host github-work.com
 Hostname github.com
 User git
 IdentityFile ~/.ssh/github/github_work_key
+
+# GitHub Personal
+
+Host github-personal.com
+Hostname github.com
+User git
+IdentityFile ~/.ssh/default/default_key
 
 # Default
 
