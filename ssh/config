@@ -22,14 +22,14 @@ IdentityFile ~/.ssh/gitlab/gitlab_key
 
 # GitHub Work
 
-Host github-work.com
+Host github-work
 Hostname github.com
 User git
 IdentityFile ~/.ssh/github/github_work_key
 
 # GitHub Personal
 
-Host github-personal.com
+Host github-personal
 Hostname github.com
 User git
 IdentityFile ~/.ssh/default/default_key
