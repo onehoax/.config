@@ -2,6 +2,8 @@
 
 set -e
 
+cp "$WHOME/ahk/keyboard.ahk" ~/.config/windows/keyboard.ahk
+
 cp "$WHOME/.wslconfig" ~/.config/windows/.wslconfig
 
 cp "$WHOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" \

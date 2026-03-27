@@ -37,6 +37,7 @@
   "workbench.editor.empty.hint": "hidden",
   "explorer.confirmDelete": false,
   "terminal.integrated.initialHint": false,
+  "chat.disableAIFeatures": false,
   "chat.mcp.gallery.enabled": false,
 
   // ############################## FORMAT ##############################
@@ -214,7 +215,7 @@
     },
   ],
   "github.copilot.enable": {
-    "*": true,
+    "*": false,
     "plaintext": false,
     "markdown": false,
     "scminput": false,
