@@ -11,6 +11,7 @@ Hostname bitbucket.org
 AddressFamily inet
 User git
 IdentityFile ~/.ssh/ndg/bitbucket_key
+IdentitiesOnly yes
 
 # GitLab
 
@@ -19,6 +20,7 @@ Hostname gitlab.ndgdevelopment.com
 Port 2222
 User git
 IdentityFile ~/.ssh/ndg/gitlab_key
+IdentitiesOnly yes
 
 # GitHub Work
 
@@ -26,6 +28,7 @@ Host github-work
 Hostname github.com
 User git
 IdentityFile ~/.ssh/ndg/github_key
+IdentitiesOnly yes
 
 # GitHub Personal
 
@@ -33,8 +36,10 @@ Host github-personal
 Hostname github.com
 User git
 IdentityFile ~/.ssh/personal/default_key
+IdentitiesOnly yes
 
 # Default
 
 Host \*
 IdentityFile ~/.ssh/personal/default_key
+
