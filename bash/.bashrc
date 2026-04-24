@@ -45,7 +45,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-#export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 #export WHOME="/mnt/c/Users/andres"
 export EDITOR=vim
 
