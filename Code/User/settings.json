@@ -40,6 +40,9 @@
   "remote.autoForwardPortsSource": "hybrid",
   "notebook.output.wordWrap": true,
   "window.zoomLevel": 0.5,
+  "workbench.navigationControl.enabled": false,
+  "workbench.browser.showInTitleBar": false,
+  "workbench.layoutControl.enabled": false,
 
   // ############################## AI ##############################
 
