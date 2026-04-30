@@ -161,3 +161,8 @@ sudo snapper -c home ls
 # EXTERNAL BACKUP
 
 - If external target disk is `btrfs` then [btrbk](https://digint.ch/btrbk/) is the best option
+
+# REFERENCES
+
+- [Snapper + DNF hooks](https://sysguides.com/install-fedora-42-with-snapshot-and-rollback-support#5-set-up-snapper-grubbtrfs-and-btrfs-assistant)
+- [btrbk](https://digint.ch/btrbk/)
