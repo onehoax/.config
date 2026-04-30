@@ -153,6 +153,59 @@ Best practice recommendation for your setup:
 
 ## CREATE BTRFS PARTITION ON EXTERNAL DRIVE
 
+Assuming you have an external drive which is part `nfts` for access from different systems and some unallocated space to create the `btrfs` partition.
+
+1. Check free space
+
+   ```bash
+   sudo parted /dev/sda print free
+   ```
+
+2. Create the new parition
+
+   ```bash
+   sudo parted /dev/sda
+
+   # inside parted - `mkpart TYPE START END` -> 476GB is the correct start boundary of the free region, not the amount of free space
+   (parted) mkpart primary btrfs 476GB 100%
+   (parted) quit
+
+   # verify
+   lsblk -f
+   ```
+
+3. Format as `btrfs`
+
+   ```bash
+   sudo mkfs.btrfs -L FEDORA_BACKUP /dev/sda2
+
+   # reboot so you don't have to mount manually
+   sudo systemctl reboot
+
+   # verify
+   lsblk -f
+   ```
+
+4. Send snapshots to external drive
+
+   ```bash
+   # mount top-level btrfs tree
+   sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top/
+
+   # create subdirs in external drive
+   sudo mkdir -p /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}
+
+   # first time send
+   sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}/
+
+   # verify with UUID - Received UUID of the one in external drive should be the same as UUID of the original one
+   sudo btrfs subvolume show /mnt/btrfs-top/snapshots/root/root_2026-04-30_17_09/
+   sudo btrfs subvolume show /run/media/andres/FEDORA_BACKUP/snapshots/root/root_2026-04-30_17_09/
+
+   # incremental send
+   sudo btrfs send -p OLD_SNAPSHOT NEW_SNAPSHOT | btrfs receive DEST
+   ```
+
 # REFERENCES
 
 - [Btrfs Official Docs](https://btrfs.readthedocs.io/en/latest/#)
