@@ -1,219 +1,160 @@
 - [DESCRIPTION](#description)
-- [LOCAL](#local)
+- [BACKUP](#backup)
+- [ROLLBACK](#rollback)
 - [EXTERNAL](#external)
 - [REFERENCES](#references)
 
 # DESCRIPTION
 
-Backup strategy: local and external.
+Backup strategy.
 
-# LOCAL
+# BACKUP
 
-- Local snapshot-based backup strategy
-- Use snapper + DNF pre/post action hooks to take automatic snaphots for root `/`.
-- DNF pre/post hooks activates on DNF5 transactions that trigger:
-  - pre_transaction
-  - post_transaction
+1. Create temporary mountpoint
 
-So any command that performs a real package transaction can trigger it.
+   ```bash
+   sudo mkdir -p /mnt/btrfs-top
+   ```
 
-Typical commands that trigger snapshots
+2. Mount top-level btrfs tree (id 5)
 
-```bash
-sudo dnf upgrade
-sudo dnf upgrade --refresh
-sudo dnf install vim
-sudo dnf remove firefox
-sudo dnf reinstall bash
-sudo dnf distro-sync
-sudo dnf downgrade package
-sudo dnf group install ...
-sudo dnf autoremove
-```
+   ```bash
+   # find encrypted disk partition after it has been unlocked (the real phyisical parition is `/dev/nvme0n1p6` - check with lsblk)
+   # it'll be `/dev/mapper/luks...`
+   sudo btrfs filesystem show /
 
-Because they modify the RPM database / installed packages.
+   # mount top-level tree
+   sudo mount -o subvolid=5 /dev/mapper/luks-503a86d9-f195-4d8d-9a76-78ae4f3b7c84 /mnt/btrfs-top/
 
-## INSTALL DEPS
+   # verify mount
+   ls -al /mnt/btrfs-top/ # should see `root` and `home`
+   sudo btrfs subvolume list / # note `var/lib/machines`
+   sudo btrfs subvolume list /mnt/btrfs-top # note `root/var/lib/machines`
+   mount | grep btrfs # note `subvolid=` and `subvol=`
+   ```
 
-```bash
-sudo dnf install snapper libdnf5-plugin-actions
-```
+3. Create top-level snapshot subvolume
 
-## CREATE DNF PRE/POST HOOK
+   ```bash
+   sudo btrfs subvolume create /mnt/btrfs-top/snapshots
+   sudo btrfs subvolume list /mnt/btrfs-top/
+   sudo mkdir -p /mnt/btrfs-top/snapshots/{root,home}
+   ls -al /mnt/btrfs-top/ # should see `root`, `home`, `snapshots/{root,home}`
+   ```
 
-- Only runs for `root` config.
-- DNF pre/post snapshots do NOT include `/home` because there is a lot of constant noise in this subvolume; create on a per-need basis
-- Command 'rollback' cannot be used on a non-root subvolume /home - therefore just use for browsing old versions, selective restore - Use btrbk for full backup/restore.
-- `snapper rollback` is intended for root filesystem rollbacks.
+4. Create/delete snapshots
 
-```bash
-sudo bash -c "cat > /etc/dnf/libdnf5-plugins/actions.d/snapper.actions" <<'EOF'
-# Get snapshot description
-pre_transaction::::/usr/bin/sh -c echo\ "tmp.cmd=$(ps\ -o\ command\ --no-headers\ -p\ '${pid}')"
+   ```bash
+   # create (read-only)
+   sudo btrfs subvolume snapshot -r /mnt/btrfs-top/root/ /mnt/btrfs-top/snapshots/root/<snapshot_name>_$(date +%F_%H_%M)
+   sudo btrfs subvolume snapshot -r /mnt/btrfs-top/home/ /mnt/btrfs-top/snapshots/home/<snapshot_name>_$(date +%F_%H_%M)
+   sudo btrfs subvolume list /mnt/btrfs-top
 
-# Creates pre snapshot before the transaction and stores the snapshot number in the "tmp.snapper_pre_number"  variable.
-pre_transaction::::/usr/bin/sh -c echo\ "tmp.snapper_pre_number=$(snapper\ create\ -t\ pre\ -c\ number\ -p\ -d\ '${tmp.cmd}')"
+   # delete
+   sudo btrfs subvolume delete /mnt/btrfs-top/snapshots/root/<snapshot>
+   sudo btrfs subvolume delete /mnt/btrfs-top/snapshots/home/<snapshot>
+   sudo btrfs subvolume list /mnt/btrfs-top
+   ls -al /mnt/btrfs-top/snapshots/root/
+   ls -al /mnt/btrfs-top/snapshots/home/
+   ```
 
-# If the variable "tmp.snapper_pre_number" exists, it creates post snapshot after the transaction and removes the variable "tmp.snapper_pre_number".
-post_transaction::::/usr/bin/sh -c [\ -n\ "${tmp.snapper_pre_number}"\ ]\ &&\ snapper\ create\ -t\ post\ --pre-number\ "${tmp.snapper_pre_number}"\ -c\ number\ -d\ "${tmp.cmd}"\ ;\ echo\ tmp.snapper_pre_number\ ;\ echo\ tmp.cmd
-EOF
+5. Unmount top-level btrfs after changes have been made
 
-sudo cat /etc/dnf/libdnf5-plugins/actions.d/snapper.actions
-```
+   ```bash
+   sudo umount /mnt/btrfs-top
+   mount | grep btrfs
+   ```
 
-## CREATEA SNAPPER CONFIGS
+# ROLLBACK
 
-```bash
-sudo snapper -c root create-config /
-sudo snapper -c home create-config /home
-sudo snapper list-configs
-sudo ls -al /.snapshots
-sudo ls -al /home/.snapshots/
-```
+## IN-PLACE ROLLBACK (SYSTEM STILL BOOTS)
 
-## RESTORE THE CORRECT SELINUX CONTEXTS FOR THE .SNAPSHOTS DIRECTORIES
+This assumes:
 
-```bash
-sudo restorecon -RFv /.snapshots
-sudo restorecon -RFv /home/.snapshots
-```
+- your root is subvolume root
+- snapshots live in `snapshots/root/...`
+- top-level is mounted at `/mnt/btrfs-top`
 
-### VERIFY SELINUX LABELS: THEY ALL SHOULD HAVE `SNAPPERD_DATA_T`
+1. Mount top-level (temporary admin view)
 
-```bash
-ls -1dZ /.snapshots /home/.snapshots
-```
+   ```bash
+   sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top
+   ```
 
-## VERIFY CORRESPONDING SUBVOLUMES: SHOULD SEE `PATH .SNAPSHOTS` AND `PATH HOME/.SNAPSHOTS`
+2. Identify snapshot
 
-```bash
-sudo btrfs subvolume list /
-```
+   ```bash
+   # e.g.: pre-upgrade-2026-04-30
+   ls /mnt/btrfs-top/snapshots/root
+   ```
 
-## VERIFY SNAPSHOTS
+3. Stop modifying system (important)
 
-```bash
-sudo snapper -c root ls
-sudo snapper -c home ls
-```
+   ```bash
+   # or boot from TTY (CTRL+ALT+F[3...6]; CTRL+ALT+F[1|2|7] -> return to login/desktop session)
+   sudo systemctl isolate multi-user.target
+   ```
 
-## ENABLE SNAPSHOT CLEANUP SERVICE
+4. Replace current root subvolume
 
-This service runs periodically to clean up snapshots based on retention policies defined for each snapper config;
-since we disable the time-based policy below, the cleanup service runs accordingly only to the number-based policy we modify below.
+   ```bash
+   # rename current root (safety fallback)
+   sudo mv /mnt/btrfs-top/root /mnt/btrfs-top/root.broken
 
-```bash
-sudo systemctl enable --now snapper-cleanup.timer
-sudo systemctl status snapper-cleanup.timer
-systemctl list-timers snapper-cleanup.timer
-```
+   # restore snapshot as new root
+   # does not replace anything - just creates a new subvolume - clone snapshot into place - now the snapshot becomes the new root
+   sudo btrfs subvolume snapshot /mnt/btrfs-top/snapshots/root/pre-upgrade-2026-04-30 /mnt/btrfs-top/root
+   ```
 
-### ENABLE TIME-BASED SNAPSHOT CREATION SERVICE (OPTIONAL)
+5. Reboot
 
-```bash
-sudo systemctl enable --now snapper-timeline.timer
-sudo systemctl status snapper-timeline.timer
-```
+   ```bash
+   # system boots into restored root
+   sudo reboot
+   ```
 
-### DISABLE TIME-BASED SNAPSHOTS
+## FULL DISASTER RECOVERY (SYSTEM DOES NOT BOOT)
 
-Would need the service `snapper-timeline.timer` to be enabled if switched to `yes`.
+This is your LiveUSB scenario.
 
-```bash
-sudo snapper -c root set-config TIMELINE_CREATE=no TIMELINE_CLEANUP=no
-sudo snapper -c home set-config TIMELINE_CREATE=no TIMELINE_CLEANUP=no
-```
+1. Boot LiveUSB
+2. Unlock disk
+   ```bash
+   sudo cryptsetup open /dev/nvme0n1p6 cryptroot
+   ```
+3. Ensure correct boot config
+   ```bash
+   # usually unchanged if same subvolume structure.
+   cat /mnt/btrfs-top/root/etc/fstab
+   ```
+4. Execute steps 1 to 5 from [above](#in-place-rollback-system-still-boots)
 
-### MODIFY RETENTION POLICY
+## RESTORING A SINGLE FILE (SAFER ALTERNATIVE)
 
-- Retain a max of 10 normal and 5 important snapshots; the cleanup service removes old ones according to this
-- Important snapshots are have to be created with a special flag (see docs); most of the time we only deal with regular ones
-
-```bash
-sudo snapper -c root set-config NUMBER_LIMIT=10 NUMBER_LIMIT_IMPORTANT=5
-sudo snapper -c home set-config NUMBER_LIMIT=10 NUMBER_LIMIT_IMPORTANT=5
-```
-
-### VERIFY CONFIG CHANGES
+Instead of full rollback:
 
 ```bash
-sudo cat /etc/snapper/configs/root
-sudo cat /etc/snapper/configs/home
+cp /mnt/btrfs-top/snapshots/root/.../etc/xyz /mnt/btrfs-top/root/etc/xyz
 ```
 
-## WORK FLOWS
+## IMPORTANT
 
-### DNF PRE/POST HOOK + SNAPSHOTS (`ROOT`)
+- you are not editing snapshots
+- you are replacing subvolumes
 
-```bash
-sudo dnf upgrade --refresh
-sudo snapper -c root list
-sudo snapper -c root status 1..2
-sudo ls -al /.snapshots
-sudo snapper -c root rollback <SNAP_ID>
-sudo systemctl reboot
-```
+Snapshots are immutable (if created with -r).
 
-### MANUAL SNAPSHOTS (`HOME`)
+Best practice recommendation for your setup:
 
-```bash
-sudo snapper -c home create -d "sample"
-sudo ls -al /home/.snapshots
-sudo snapper -c home status 0..1
-sudo snapper undochange 0..1
-sudo snapper undochange 1..0
-sudo snapper -c home remove 1
-sudo snapper -c home ls
-
-# e.g.: sudo cp -a /home/.snapshots/1/snapshot/andres/.bashrc /home/andres/.bashrc
-# Using -a helps preserve original ownership
-```
-
-## DIFFERENCE BETWEEN SNAPPER `ROLLBACK` AND `UNDOCHANGE`
-
-The primary difference between snapper rollback and snapper undochange lies in their scope and implementation: rollback performs a subvolume swap to restore the entire system state, while undochange performs a file-level restoration of specific changes.
-
-System Rollback (snapper rollback): This command sets a previous snapshot as the default subvolume. It is an atomic operation that reverts the root filesystem, kernel, and bootloader configuration simultaneously. This is the preferred method for full system recovery (e.g., after a failed update) on distributions like openSUSE, as it ensures consistency across the entire root subvolume.
-
-Undo Changes (snapper undochange): This command compares two snapshots and reverts specific file modifications between them without changing the default subvolume. It is useful for selective restoration (e.g., undoing a single package installation or config change) but may leave the package manager database out of sync with the filesystem state. On some systems, using undochange on the root filesystem without subsequent package manager synchronization can lead to boot issues.
-
-In summary, use rollback for disaster recovery and full system reverts, and undochange for granular, file-level corrections where a full system reboot is undesirable.
+- snapshots for rollback points
+- external backup (btrfs send) for disaster recovery layer
 
 # EXTERNAL
 
-Send btrfs snapshots to external drive.
-
 ## CREATE BTRFS PARTITION ON EXTERNAL DRIVE
-
-## HIGH-LEVEL FLOW
-
-### BOOT LIVEUSB (PREFERRED)
-
-1. Boot Fedora LiveUSB
-2. Connect external Btrfs backup drive
-3. Unlock internal LUKS disk
-4. Mount internal Btrfs filesystem
-5. Delete/rename damaged root/home subvolumes if needed
-6. Receive or snapshot-copy backed-up root/home subvolumes back to internal disk
-7. Mount restored subvolumes as / and /home
-8. Chroot if needed
-9. Rebuild initramfs
-10. Reinstall/refresh GRUB
-11. Verify fstab/crypttab
-12. Reboot
-
-### RECOVERY KERNEL (IF SYSTEM STILL BOOTS)
-
-1. Boot recovery kernel
-2. Gain root shell
-3. Mount external backup drive
-4. Restore root/home subvolumes from backup
-5. Rebuild initramfs / GRUB if needed
-6. Reboot
 
 # REFERENCES
 
-- [BTRFS Official Docs](https://btrfs.readthedocs.io/en/latest/#)
+- [Btrfs Official Docs](https://btrfs.readthedocs.io/en/latest/#)
+- [Get Started with the Btrfs File System on Oracle Linux](https://www.youtube.com/watch?v=oJozWsiEVrQ)
 - [Btrfs Subvolumes and Snapshots on Oracle Linux](https://www.youtube.com/watch?v=qUmtqbX1qRQ)
-- [Fedora 44: Snapper + Rollback Setup](https://www.youtube.com/watch?v=d-CafjZf2M4)
-- [Snapper + DNF hooks](https://sysguides.com/install-fedora-42-with-snapshot-and-rollback-support#5-set-up-snapper-grubbtrfs-and-btrfs-assistant)
