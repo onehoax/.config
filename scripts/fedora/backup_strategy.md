@@ -181,7 +181,35 @@ In summary, use rollback for disaster recovery and full system reverts, and undo
 
 # EXTERNAL
 
--
+Send btrfs snapshots to external drive.
+
+## CREATE BTRFS PARTITION ON EXTERNAL DRIVE
+
+## HIGH-LEVEL FLOW
+
+### BOOT LIVEUSB (PREFERRED)
+
+1. Boot Fedora LiveUSB
+2. Connect external Btrfs backup drive
+3. Unlock internal LUKS disk
+4. Mount internal Btrfs filesystem
+5. Delete/rename damaged root/home subvolumes if needed
+6. Receive or snapshot-copy backed-up root/home subvolumes back to internal disk
+7. Mount restored subvolumes as / and /home
+8. Chroot if needed
+9. Rebuild initramfs
+10. Reinstall/refresh GRUB
+11. Verify fstab/crypttab
+12. Reboot
+
+### RECOVERY KERNEL (IF SYSTEM STILL BOOTS)
+
+1. Boot recovery kernel
+2. Gain root shell
+3. Mount external backup drive
+4. Restore root/home subvolumes from backup
+5. Rebuild initramfs / GRUB if needed
+6. Reboot
 
 # REFERENCES
 
