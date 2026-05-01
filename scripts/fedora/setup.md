@@ -25,7 +25,8 @@ There are usually problems with suspend when using NVIDIA and external monitor; 
   ```
 - Gnome settings
   ```bash
-  # disable suspend
+  # disable automatic screen balck and suspend
+  gsettings set org.gnome.desktop.session idle-delay 0
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
   gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0
   ```
