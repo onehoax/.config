@@ -1,0 +1,46 @@
+(setq
+ ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
+ ;; However, can't easily be disabled, so discard its contents
+ custom-file "/dev/null"
+
+ ;; No backup files, please
+ make-backup-files nil
+
+ ;; Disable auto-save
+ auto-save-default nil
+ )
+
+(setq-default
+ ;; Tabs to spaces
+ indent-tabs-mode nil
+ tab-width 2
+ )
+
+(load-theme 'wombat)
+
+(setq
+ ;; Inhibit startup dashboard
+ inhibit-startup-message t
+
+ ;; Flash the UI instead of beeping
+ visible-bell t
+ )
+
+;; Disable visible scrollbar
+(scroll-bar-mode -1)
+
+;; Disable the toolbar
+(tool-bar-mode -1)
+
+;; Disable the menu bar
+(menu-bar-mode -1)
+
+;; Show line numbers
+(global-display-line-numbers-mode 1)
+
+;; Show column number on mode line
+(column-number-mode 1)
+
+;; Very nice smooth scrolling on modern Emacs.
+(pixel-scroll-precision-mode 1)
+
