@@ -151,60 +151,110 @@ Best practice recommendation for your setup:
 
 # EXTERNAL
 
-## CREATE BTRFS PARTITION ON EXTERNAL DRIVE
+## FORMAT EXTERNAL DRIVE AS BTRFS
 
-Assuming you have an external drive which is part `nfts` for access from different systems and some unallocated space to create the `btrfs` partition.
-
-1. Check free space
+1. Identify device
 
    ```bash
-   sudo parted /dev/sda print free
-   ```
-
-2. Create the new parition
-
-   ```bash
-   sudo parted /dev/sda
-
-   # inside parted - `mkpart TYPE START END` -> 476GB is the correct start boundary of the free region, not the amount of free space
-   (parted) mkpart primary btrfs 476GB 100%
-   (parted) quit
-
-   # verify
    lsblk -f
    ```
 
-3. Format as `btrfs`
+2. Wipe existing partition table
 
    ```bash
-   sudo mkfs.btrfs -L FEDORA_BACKUP /dev/sda2
+   # if `lsblk -f` still shows the device as `ntfs` then old filesystem signatures remain inside the partition itself, not just the disk header
+   # in that case wipe the partition too: `sudo wipefs -a /dev/sda1`
+   sudo wipefs -a /dev/sda
+   ```
 
-   # reboot so you don't have to mount manually
-   sudo systemctl reboot
+3. Create a new GPT table
 
-   # verify
+   ```bash
+   sudo parted /dev/sda -- mklabel gpt
+   ```
+
+4. Create one large partition
+
+   ```bash
+   sudo parted /dev/sda -- mkpart primary 1MiB 100%
    lsblk -f
    ```
 
-4. Send snapshots to external drive
+5. Encrypt drive
 
    ```bash
-   # mount top-level btrfs tree
-   sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top/
-
-   # create subdirs in external drive
-   sudo mkdir -p /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}
-
-   # first time send
-   sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}/
-
-   # verify with UUID - Received UUID of the one in external drive should be the same as UUID of the original one
-   sudo btrfs subvolume show /mnt/btrfs-top/snapshots/root/root_2026-04-30_17_09/
-   sudo btrfs subvolume show /run/media/andres/FEDORA_BACKUP/snapshots/root/root_2026-04-30_17_09/
-
-   # incremental send
-   sudo btrfs send -p OLD_SNAPSHOT NEW_SNAPSHOT | btrfs receive DEST
+   sudo cryptsetup --force-password luksFormat /dev/sda1
+   sudo cryptsetup open /dev/sda1 external_crypt
    ```
+
+6. Format as `btrfs`
+
+   ```bash
+   sudo mkfs.btrfs -L external_data /dev/mapper/external_crypt
+
+   # verify
+   lsblk -f
+   # /dev/sda1          crypto_LUKS
+   # └─external_crypt   btrfs  external_data
+   ```
+
+7. Mount it somewhere
+
+   ```bash
+   sudo mkdir -p /mnt/external
+   sudo mount /dev/mapper/external_crypt /mnt/external/
+   ```
+
+8. Create subvolumes
+
+   ```bash
+   sudo btrfs subvolume create /mnt/external/files
+   sudo btrfs subvolume create /mnt/external/fedora_backups
+   ```
+
+9. Copy your files into external drive using rsync
+
+   ```bash
+   sudo rsync -avh --progress ~/Downloads/ /mnt/external/files/
+   du -sh ~/Downloads
+   du -sh /mnt/external/files
+   ```
+
+## MOUNT
+
+In case you've umounted manually because otherwise the system automatically mounts to `/run/media/andres/...`.
+
+```bash
+sudo cryptsetup open /dev/sda1 external_crypt
+sudo mount /dev/mapper/external_crypt /mnt/external
+```
+
+## SEND SNAPSHOTS TO EXTERNAL DRIVE
+
+```bash
+# mount top-level btrfs tree
+sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top/
+
+# create subdirs in external drive
+sudo mkdir -p /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}
+
+# first time send
+sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}/
+
+# verify with UUID - Received UUID of the one in external drive should be the same as UUID of the original one
+sudo btrfs subvolume show /mnt/btrfs-top/snapshots/root/root_2026-04-30_17_09/
+sudo btrfs subvolume show /run/media/andres/FEDORA_BACKUP/snapshots/root/root_2026-04-30_17_09/
+
+# incremental send
+sudo btrfs send -p OLD_SNAPSHOT NEW_SNAPSHOT | btrfs receive DEST
+```
+
+## UMOUNT
+
+```bash
+sudo umount /mnt/external
+sudo cryptsetup close external_crypt
+```
 
 # REFERENCES
 

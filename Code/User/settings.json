@@ -43,10 +43,6 @@
   "workbench.navigationControl.enabled": false,
   "workbench.browser.showInTitleBar": false,
   "workbench.layoutControl.enabled": false,
-
-  // ############################## AI ##############################
-
-  "chat.disableAIFeatures": true,
   "chat.mcp.gallery.enabled": false,
   "claudeCode.preferredLocation": "panel",
 
