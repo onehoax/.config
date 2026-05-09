@@ -209,7 +209,10 @@ Best practice recommendation for your setup:
 
    ```bash
    sudo btrfs subvolume create /mnt/external/files
-   sudo btrfs subvolume create /mnt/external/fedora_backups
+   sudo btrfs subvolume create /mnt/external/fedora_snapshots
+
+   # create subdirs in external drive
+   sudo mkdir -p /run/media/andres/external_data/fedora_snapshots/{root,home}
    ```
 
 9. Copy your files into external drive using rsync
@@ -235,15 +238,12 @@ sudo mount /dev/mapper/external_crypt /mnt/external
 # mount top-level btrfs tree
 sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top/
 
-# create subdirs in external drive
-sudo mkdir -p /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}
-
 # first time send
-sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/FEDORA_BACKUP/snapshots/{root,home}/
+sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/external_data/fedora_snapshots/{root,home}/
 
 # verify with UUID - Received UUID of the one in external drive should be the same as UUID of the original one
 sudo btrfs subvolume show /mnt/btrfs-top/snapshots/root/root_2026-04-30_17_09/
-sudo btrfs subvolume show /run/media/andres/FEDORA_BACKUP/snapshots/root/root_2026-04-30_17_09/
+sudo btrfs subvolume show /run/media/andres/external_data/fedora_snapshots/root/root_2026-04-30_17_09/
 
 # incremental send
 sudo btrfs send -p OLD_SNAPSHOT NEW_SNAPSHOT | btrfs receive DEST
