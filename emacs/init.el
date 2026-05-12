@@ -44,3 +44,16 @@
 ;; Very nice smooth scrolling on modern Emacs.
 (pixel-scroll-precision-mode 1)
 
+;; Fullscreen on init
+;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; Set frame dimensions on init and subsequent frames created
+(setq initial-frame-alist
+      '((width . 150)
+        (height . 50)))
+(setq default-frame-alist initial-frame-alist)
+
+(add-hook 'shell-mode-hook
+          (lambda ()
+            (display-line-numbers-mode 0)))
+
