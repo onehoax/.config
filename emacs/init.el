@@ -57,3 +57,4 @@
           (lambda ()
             (display-line-numbers-mode 0)))
 
+(put 'narrow-to-region 'disabled nil)
