@@ -58,3 +58,10 @@
             (display-line-numbers-mode 0)))
 
 (put 'narrow-to-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
+;;;; keybinds
+(keymap-global-unset "C-x C-f")
+(keymap-global-set "C-x f" 'find-file)
+(keymap-global-set "C-x C-b" 'buffer-menu)
+
