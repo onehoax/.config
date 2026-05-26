@@ -81,3 +81,28 @@
 (keymap-global-unset "C-x C-f")
 (keymap-global-set "C-x f" 'find-file)
 (keymap-global-set "C-x C-b" 'buffer-menu)
+
+(use-package eglot
+  :ensure nil
+  :hook ((js-ts-mode
+          typescript-ts-mode
+          tsx-ts-mode) . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '((js-ts-mode
+                  typescript-ts-mode
+                  tsx-ts-mode)
+                 . ("/home/andres/.asdf/shims/vtsls" "--stdio"))))
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
+
+(add-to-list 'major-mode-remap-alist
+             '(javascript-mode . js-ts-mode))
+
+(add-to-list 'major-mode-remap-alist
+             '(typescript-mode . typescript-ts-mode))
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
