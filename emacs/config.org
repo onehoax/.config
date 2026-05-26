@@ -5,6 +5,8 @@
 #+OPTIONS: toc:2
 
 * TABLE OF CONTENTS :toc:
+- [[#init][INIT]]
+  - [[#daemon-client-rel][DAEMON-CLIENT REL]]
 - [[#package-manager][PACKAGE MANAGER]]
 - [[#org][ORG]]
   - [[#modern][MODERN]]
@@ -14,6 +16,31 @@
 - [[#shell][SHELL]]
 - [[#disabled-commands][DISABLED COMMANDS]]
 - [[#keybindings][KEYBINDINGS]]
+
+* INIT
+** DAEMON-CLIENT REL
+
+#+begin_src bash :tangle no
+  # enable emacs daemon
+  systemctl --user enable emacs.service
+
+  # disable emacs daemon
+  systemctl --user disable emacs.service
+
+  # manually start daemon
+  systemctl --user start emacs.service
+
+  # manually stop daemon
+  systemctl --user stop emacs.service
+
+  # check status
+  systemctl --user status emacs.service
+  ps aux | grep emacs # should see something like `emacs --fg-daemon`
+
+  # set aliases for emacsclient
+  alias ec='emacsclient -n -r -a ""'
+  alias emacs='ec'
+#+end_src
 
 * PACKAGE MANAGER
 
