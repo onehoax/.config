@@ -17,6 +17,7 @@
 - [[#disabled-commands][DISABLED COMMANDS]]
 - [[#keybindings][KEYBINDINGS]]
 - [[#lsp][LSP]]
+  - [[#import-shell-env][Import Shell Env]]
   - [[#jsts][JS+TS]]
 
 * INIT
@@ -165,6 +166,14 @@
 #+end_src
 
 * LSP
+** Import Shell Env
+Need this so that emacs daemon sees asdf executables:
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :if (daemonp)
+    :config
+    (exec-path-from-shell-initialize))
+#+end_src
 ** JS+TS
 
 Install js/ts server:
@@ -187,7 +196,7 @@ Eglot Setup:
                  '((js-ts-mode
                     typescript-ts-mode
                     tsx-ts-mode)
-                   . ("/home/andres/.asdf/shims/vtsls" "--stdio"))))
+                   . ("vtsls" "--stdio"))))
 #+end_src
 
 Declare file-mode associations:
