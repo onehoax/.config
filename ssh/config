@@ -1,11 +1,7 @@
 # Use the following in your home dir's .gitconfig file to source from this one
-
-#
-
 # Include ~/.config/ssh/config
 
 # BitBucket
-
 Host bitbucket.org
 Hostname bitbucket.org
 AddressFamily inet
@@ -14,7 +10,6 @@ IdentityFile ~/.ssh/ndg/bitbucket_key
 IdentitiesOnly yes
 
 # GitLab
-
 Host gitlab.ndgdevelopment.com
 Hostname gitlab.ndgdevelopment.com
 Port 2222
@@ -23,7 +18,6 @@ IdentityFile ~/.ssh/ndg/gitlab_key
 IdentitiesOnly yes
 
 # GitHub Work
-
 Host github-work
 Hostname github.com
 User git
@@ -31,15 +25,20 @@ IdentityFile ~/.ssh/ndg/github_key
 IdentitiesOnly yes
 
 # GitHub Personal
-
 Host github-personal
 Hostname github.com
 User git
 IdentityFile ~/.ssh/personal/default_key
 IdentitiesOnly yes
 
-# Default
+# GitHub Personal
+Host codeberg.org
+Hostname codeberg.org
+User git
+IdentityFile ~/.ssh/personal/default_key
+IdentitiesOnly yes
 
+# Default
 Host \*
 IdentityFile ~/.ssh/personal/default_key
 
