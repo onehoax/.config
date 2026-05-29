@@ -154,6 +154,8 @@
 
 (keymap-global-set "C-c w" #'my/copy-line)
 
+(keymap-global-set "C-c s" #'shell)
+
 (use-package corfu
   :init
   (global-corfu-mode))

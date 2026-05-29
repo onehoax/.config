@@ -252,6 +252,8 @@
     (message "Line copied"))
 
   (keymap-global-set "C-c w" #'my/copy-line)
+
+  (keymap-global-set "C-c s" #'shell)
 #+end_src
 
 * AUTO-COMPLETION
