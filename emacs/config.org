@@ -10,8 +10,8 @@
 - [[#package-manager][PACKAGE MANAGER]]
 - [[#org][ORG]]
   - [[#general][GENERAL]]
-  - [[#modern][MODERN]]
   - [[#tempo][TEMPO]]
+  - [[#other][OTHER]]
 - [[#sane-defaults][SANE DEFAULTS]]
 - [[#theme][THEME]]
 - [[#shell][SHELL]]
@@ -31,45 +31,47 @@
 ** LEXICAL BINDING
 
 #+begin_src emacs-lisp
-  ;;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t; -*-
 #+end_src
 
 ** DAEMON-CLIENT REL
 
 #+begin_src bash :tangle no
-  # enable emacs daemon
-  systemctl --user enable emacs.service
+# enable emacs daemon
+systemctl --user enable emacs.service
 
-  # disable emacs daemon
-  systemctl --user disable emacs.service
+# disable emacs daemon
+systemctl --user disable emacs.service
 
-  # manually start daemon
-  systemctl --user start emacs.service
+# manually start daemon
+systemctl --user start emacs.service
 
-  # manually stop daemon
-  systemctl --user stop emacs.service
+# manually stop daemon
+systemctl --user stop emacs.service
 
-  # check status
-  systemctl --user status emacs.service
-  ps aux | grep emacs # should see something like `emacs --fg-daemon`
+# check status
+systemctl --user status emacs.service
+ps aux | grep emacs # should see something like `emacs --fg-daemon`
 
-  # set aliases for emacsclient
-  alias ec='emacsclient -n -r -a ""'
-  alias emacs='ec'
+# set aliases for emacsclient
+alias ec='emacsclient -n -r -a ""'
+alias emacs='ec'
 #+end_src
 
 * PACKAGE MANAGER
 
 #+begin_src emacs-lisp
-  (require 'package)
+(require 'package)
 
-  (add-to-list 'package-archives
-               '("melpa" . "https://melpa.org/packages/")
-               t)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/")
+             t)
 
-  (require 'use-package)
+(package-initialize)
 
-  (setq use-package-always-ensure t)
+(require 'use-package)
+
+(setq use-package-always-ensure t)
 #+end_src
 
 * ORG
@@ -77,205 +79,198 @@
 ** GENERAL
 
 #+begin_src emacs-lisp
-  (setq org-default-notes-file "~/org")
+(defun my/org-no-angle-brackets ()
+  (let ((old-predicate electric-pair-inhibit-predicate))
+    (setq-local electric-pair-inhibit-predicate
+                (lambda (c)
+                  (if (char-equal c ?<)
+                      t
+                    (funcall old-predicate c))))))
 
-  (setq org-default-notes-file
-        (expand-file-name "notes.org" org-directory))
-
-  (setq org-agenda-files
-        (list org-directory))
-#+end_src
-
-** MODERN
-
-#+begin_src emacs-lisp
-  (use-package org-modern
-    :hook (org-mode . org-modern-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-  (use-package toc-org
-    :hook (org-mode . toc-org-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-  (add-hook 'org-mode-hook #'org-indent-mode)
+(use-package org
+  :ensure nil
+  
+  :custom
+  ;; prevent org from modifying the whitespace inside your code blocks
+  ;;(org-src-preserve-indentation t)
+  ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
+  (org-edit-src-content-indentation 0)
+  (org-directory "~/org")
+  (org-default-notes-file (expand-file-name "notes.org" org-directory))
+  (org-agenda-files (list org-directory))
+  
+  :hook
+  (org-mode . my/org-no-angle-brackets)
+  (org-mode . org-indent-mode)
+  ;; disable electric-indent-mode only for org buffers
+  ;; (org-mode . (lambda () (electric-indent-local-mode -1)))
+  )
 #+end_src
 
 ** TEMPO
 
 #+begin_src emacs-lisp
-  (require 'org-tempo)
+(use-package org-tempo
+  :ensure nil
+  :after org
+  :config
+  (dolist (template '(("el" . "src emacs-lisp")
+                      ("sh" . "src shell")
+                      ("js" . "src javascript")
+                      ("ts" . "src typescript")))
+    (add-to-list 'org-structure-template-alist template))
 
-  ;; Expansions
-  (with-eval-after-load 'org
-    (add-to-list 'org-structure-template-alist
-                   '("el" . "src emacs-lisp"))
+  (tempo-define-template
+   "org-header"
+   '("#+TITLE: " p n
+     "#+AUTHOR: Andres Osorio" n
+     "#+DESCRIPTION: " n
+     "#+DATE: " (format-time-string "%Y-%m-%d") n
+     "#+STARTUP: content" n n
+     "* TABLE OF CONTENTS :toc:" n n)
+   "<oh"))
+#+end_src
 
-    (add-to-list 'org-structure-template-alist
-                 '("sh" . "src shell"))
+** OTHER
 
-    (add-to-list 'org-structure-template-alist
-                 '("js" . "src javascript"))
-
-    (add-to-list 'org-structure-template-alist
-                 '("ts" . "src typescript")))
-
-  (with-eval-after-load 'org
-    (tempo-define-template
-     "org-header"
-     '("#+TITLE: " p n
-       "#+AUTHOR: Andres Osorio" n
-       "#+DESCRIPTION: " n
-       "#+DATE: " (format-time-string "%Y-%m-%d") n
-       "#+STARTUP: content" n n
-       "* TABLE OF CONTENTS :toc:" n n)
-     "<oh"))
-
-  (defun my/org-no-angle-brackets ()
-    (let ((old-predicate electric-pair-inhibit-predicate))
-      (setq-local electric-pair-inhibit-predicate
-                  (lambda (c)
-                    (if (char-equal c ?<)
-                        t
-                      (funcall old-predicate c))))))
-
-  (add-hook 'org-mode-hook #'my/org-no-angle-brackets)
+#+begin_src emacs-lisp
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
 #+end_src
 
 * SANE DEFAULTS
 
 #+begin_src emacs-lisp
-  (setq
-   ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
-   ;; However, can't easily be disabled, so discard its contents.
-   custom-file "/dev/null"
+(setq
+ ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
+ ;; However, can't easily be disabled, so discard its contents.
+ custom-file "/dev/null"
 
-   ;; No backup files, please
-   make-backup-files nil
+ ;; No backup files, please
+ make-backup-files nil
 
-   ;; Disable auto-save
-   auto-save-default nil
+ ;; Disable auto-save
+ auto-save-default nil
 
-   ;; Disable lock files
-   create-lockfiles nil
+ ;; Disable lock files
+ create-lockfiles nil
 
-   ;; Inhibit startup dashboard
-   inhibit-startup-message t
+ ;; Inhibit startup dashboard
+ inhibit-startup-message t
 
-   ;; Flash the UI instead of beeping
-   visible-bell t)
+ ;; Flash the UI instead of beeping
+ visible-bell t)
 
-  ;; Disable visible scrollbar
-  (scroll-bar-mode -1)
+;; Disable visible scrollbar
+(scroll-bar-mode -1)
 
-  ;; Disable the toolbar
-  (tool-bar-mode -1)
+;; Disable the toolbar
+(tool-bar-mode -1)
 
-  ;; Disable the menu bar
-  (menu-bar-mode -1)
+;; Disable the menu bar
+(menu-bar-mode -1)
 
-  ;; Show line numbers
-  (global-display-line-numbers-mode 1)
+;; Show line numbers
+(global-display-line-numbers-mode 1)
 
-  ;; Show column number on mode line
-  (column-number-mode 1)
+;; Show column number on mode line
+(column-number-mode 1)
 
-  ;; Very nice smooth scrolling on modern Emacs.
-  (pixel-scroll-precision-mode 1)
+;; Very nice smooth scrolling on modern Emacs.
+(pixel-scroll-precision-mode 1)
 
-  ;; Fullscreen on init
-  ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; Fullscreen on init
+;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-  ;; Set frame dimensions on init and subsequent frames created
-  (setq initial-frame-alist
-        '((width . 150)
-          (height . 50))
+;; Set frame dimensions on init and subsequent frames created
+(setq initial-frame-alist
+      '((width . 150)
+        (height . 50))
 
-        default-frame-alist initial-frame-alist)
+      default-frame-alist initial-frame-alist)
 
-  ;; Tabs to spaces
-  (setq-default
-   indent-tabs-mode nil
-   tab-width 2)
+;; Tabs to spaces
+(setq-default
+ indent-tabs-mode nil
+ tab-width 2)
 
-  ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
-  (global-auto-revert-mode 1)
+;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
+(global-auto-revert-mode 1)
 
-  ;; Automatic pairing of delimeters
-  (electric-pair-mode t)
+;; Automatic pairing of delimeters
+(electric-pair-mode t)
 #+end_src
 
 * THEME
 
 #+begin_src emacs-lisp
-  (load-theme 'wombat)
+(load-theme 'wombat)
 #+end_src
 
 * SHELL
 
 #+begin_src emacs-lisp
-  (add-hook 'shell-mode-hook
-            (lambda ()
-              (display-line-numbers-mode 0)))
+(add-hook 'shell-mode-hook
+          (lambda ()
+            (display-line-numbers-mode 0)))
 #+end_src
 
 * DISABLED COMMANDS
 
 #+begin_src emacs-lisp
-  (put 'narrow-to-region 'disabled nil)
-  (put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
 #+end_src
 
 * KEYBINDINGS
 
 #+begin_src emacs-lisp
-  ;; files
-  (keymap-global-unset "C-x C-f")
-  (keymap-global-set "C-x f" #'find-file)
+;; files
+(keymap-global-unset "C-x C-f")
+(keymap-global-set "C-x f" #'find-file)
 
-  ;; buffers
-  (keymap-global-set "C-x C-b" #'buffer-menu)
+;; buffers
+(keymap-global-set "C-x C-b" #'buffer-menu)
 
-  ;; completion
-  (keymap-global-set "C-;" #'completion-at-point)
+;; completion
+(keymap-global-set "C-;" #'completion-at-point)
 
-  ;; copy line
-  (defun my/copy-line ()
-    "Copy line without killing."
-    (interactive)
-    (save-excursion
-      (kill-new
-       (buffer-substring
-        (line-beginning-position)
-        (line-beginning-position 2))))
-    (message "Line copied"))
+;; copy line
+(defun my/copy-line ()
+  "Copy line without killing."
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (line-beginning-position)
+      (line-beginning-position 2))))
+  (message "Line copied"))
 
-  (keymap-global-set "C-c w" #'my/copy-line)
+(keymap-global-set "C-c w" #'my/copy-line)
 
-  (keymap-global-set "C-c s" #'shell)
+(keymap-global-set "C-c s" #'shell)
 #+end_src
 
 * AUTO-COMPLETION
 
 #+begin_src emacs-lisp
-  (use-package corfu
-    :init
-    (global-corfu-mode))
+(use-package corfu
+  :init
+  (global-corfu-mode))
 
-  ;; minibuffer
-  (setq global-corfu-minibuffer
-        (lambda ()
-          (not (or (bound-and-true-p mct--active)
-                   (bound-and-true-p vertico--input)
-                   (eq (current-local-map) read-passwd-map)))))
+;; minibuffer
+(setq global-corfu-minibuffer
+      (lambda ()
+        (not (or (bound-and-true-p mct--active)
+                 (bound-and-true-p vertico--input)
+                 (eq (current-local-map) read-passwd-map)))))
 
-  (add-hook 'eshell-mode-hook (lambda ()
-                                (setq-local corfu-auto nil)
-                                (corfu-mode)))
+(add-hook 'eshell-mode-hook (lambda ()
+                              (setq-local corfu-auto nil)
+                              (corfu-mode)))
 
-  ;; press `RET` only once to choose and execute option in (e)shell
-  ;;(keymap-set corfu-map "RET" #'corfu-send)
+;; press `RET` only once to choose and execute option in (e)shell
+;;(keymap-set corfu-map "RET" #'corfu-send)
 #+end_src
 
 * LSP
@@ -285,10 +280,10 @@
 Need this so that emacs daemon sees asdf executables:
 
 #+begin_src emacs-lisp
-  (use-package exec-path-from-shell
-    :if (daemonp)
-    :config
-    (exec-path-from-shell-initialize))
+(use-package exec-path-from-shell
+  :if (daemonp)
+  :config
+  (exec-path-from-shell-initialize))
 #+end_src
 
 ** JS+TS
@@ -296,122 +291,126 @@ Need this so that emacs daemon sees asdf executables:
 Install js/ts server:
 
 #+begin_src bash :tangle no
-  npm i -g @vtsls/language-server
-  npm list -g
+npm i -g @vtsls/language-server
+npm list -g
 #+end_src
 
 Eglot Setup:
 
 #+begin_src emacs-lisp
-  (use-package eglot
-    :ensure nil
-    :hook ((js-ts-mode
-            typescript-ts-mode
-            tsx-ts-mode) . eglot-ensure)
-    :config
-    (add-to-list 'eglot-server-programs
-                 '((js-ts-mode
-                    typescript-ts-mode
-                    tsx-ts-mode)
-                   . ("vtsls" "--stdio"))))
+(use-package eglot
+  :ensure nil
+  :hook ((js-ts-mode
+          typescript-ts-mode
+          tsx-ts-mode) . eglot-ensure)
+  :config
+  (add-to-list 'eglot-server-programs
+               '((js-ts-mode
+                  typescript-ts-mode
+                  tsx-ts-mode)
+                 . ("vtsls" "--stdio"))))
 #+end_src
 
 Declare file-mode associations:
 
 #+begin_src emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
 #+end_src
 
 Handle cases where older non–Tree-sitter modes activate (many packages/file associations may default to them):
 
 #+begin_src emacs-lisp
-  (add-to-list 'major-mode-remap-alist
-               '(javascript-mode . js-ts-mode))
+(add-to-list 'major-mode-remap-alist
+             '(javascript-mode . js-ts-mode))
 
-  (add-to-list 'major-mode-remap-alist
-               '(typescript-mode . typescript-ts-mode))
+(add-to-list 'major-mode-remap-alist
+             '(typescript-mode . typescript-ts-mode))
 
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 #+end_src
 
 * TRANSIENT MAPS
 
 #+begin_src emacs-lisp
-  (use-package transient
-    :ensure t)
+(use-package transient
+  :ensure nil)
 #+end_src
 
 ** GENERAL
 
 #+begin_src emacs-lisp
-    (defun my/eval-init ()
-      "Evaluate emacs `init.el' file."
-      (interactive)
-      (with-current-buffer
-          (find-file-noselect user-init-file)
-        (eval-buffer)
-        (message "Reloaded init.el")))
+(defun my/eval-init ()
+  "Evaluate emacs `init.el' file."
+  (interactive)
+  (with-current-buffer
+      (find-file-noselect user-init-file)
+    (eval-buffer)
+    (message "Reloaded init.el")))
 
-    (transient-define-prefix my/menu-general ()
-      "General"
-      [["Buffer"
-        ("e" "evaluate buffer (elisp)" eval-buffer)
-        ("k" "kill buffer" kill-buffer)]
+(transient-define-prefix my/menu-general ()
+  "General"
+  [["Buffer"
+    ("e" "evaluate buffer (elisp)" eval-buffer)
+    ("k" "kill buffer" kill-buffer)]
 
-       ["Config"
-        ("c" "open config.org"
-         (lambda ()
-           (interactive)
-           (find-file "~/.config/emacs/config.org")))
-        ("i" "evaluate init.el" my/eval-init)]])
+   ["Config"
+    ("c" "open config.org"
+     (lambda ()
+       (interactive)
+       (find-file "~/.config/emacs/config.org")))
+    ("t" "open todo.org"
+     (lambda ()
+       (interactive)
+       (find-file "~/org/todo.org")))
+    ("i" "evaluate init.el" my/eval-init)]])
 
-    (keymap-global-set "C-c g" #'my/menu-general)
+(keymap-global-set "C-c g" #'my/menu-general)
 #+end_src
 
 ** SEARCH & REPLACE
 
 #+begin_src emacs-lisp
-  (transient-define-prefix my/menu-search-&-replace ()
-    "Search & Replace"
-    [["Normal (All Instances After Cursor)"
-      ("ns" "string matches" replace-string)
-      ("nr" "regex matches" replace-regexp)]
+(transient-define-prefix my/menu-search-&-replace ()
+  "Search & Replace"
+  [["Normal (All Instances After Cursor)"
+    ("ns" "string matches" replace-string)
+    ("nr" "regex matches" replace-regexp)]
 
-     ["Interactive (Use Chooses Action On Each Instance)"
-      ("is" "string matches" query-replace)
-      ("ir" "regex matches" query-replace-regexp)]])
+   ["Interactive (Use Chooses Action On Each Instance)"
+    ("is" "string matches" query-replace)
+    ("ir" "regex matches" query-replace-regexp)]])
 
-  (keymap-global-set "C-c r" #'my/menu-search-&-replace)
+(keymap-global-set "C-c r" #'my/menu-search-&-replace)
 #+end_src
 
 ** LSP
 
 #+begin_src emacs-lisp
-  (transient-define-prefix my/menu-lsp ()
-    "LSP + Diagnostics"
-    [
-     ;;["Navigation (xref)"
-     ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
-     ;; ("d" "definition" xref-find-definitions)
-     ;; the rest of the functions below do work well but just use the default `xref` keybindings for consistency.
-     ;; ("r" "references" xref-find-references) `M-?`
-     ;; ("b" "back" xref-go-back) `M-,`
-     ;; ("f" "forward" xref-go-forward)] `M-C-,`
+(transient-define-prefix my/menu-lsp ()
+  "LSP + Diagnostics"
+  [
+   ;;["Navigation (xref)"
+   ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
+   ;; ("d" "definition" xref-find-definitions)
+   ;; the rest of the functions below do work well but just use the default `xref` keybindings for consistency.
+   ;; ("r" "references" xref-find-references) `M-?`
+   ;; ("b" "back" xref-go-back) `M-,`
+   ;; ("f" "forward" xref-go-forward)] `M-C-,`
 
-     ["Refactor (Eglot)"
-      ("r" "rename symbol" eglot-rename)
-      ("a" "code actions" eglot-code-actions)
-      ("f" "format buffer" eglot-format)
-      ("s" "restart server" eglot-reconnect)]
+   ["Refactor (Eglot)"
+    ("r" "rename symbol" eglot-rename)
+    ("a" "code actions" eglot-code-actions)
+    ("f" "format buffer" eglot-format)
+    ("s" "restart server" eglot-reconnect)]
 
-     ["Diagnostics (Flymake)"
-      ("n" "next error" flymake-goto-next-error)
-      ("p" "previous error" flymake-goto-prev-error)
-      ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
+   ["Diagnostics (Flymake)"
+    ("n" "next error" flymake-goto-next-error)
+    ("p" "previous error" flymake-goto-prev-error)
+    ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
 
-  (keymap-global-set "C-c l" #'my/menu-lsp)
+(keymap-global-set "C-c l" #'my/menu-lsp)
 #+end_src
 

@@ -6,43 +6,49 @@
              '("melpa" . "https://melpa.org/packages/")
              t)
 
+(package-initialize)
+
 (require 'use-package)
 
 (setq use-package-always-ensure t)
 
-(setq org-default-notes-file "~/org")
+(defun my/org-no-angle-brackets ()
+  (let ((old-predicate electric-pair-inhibit-predicate))
+    (setq-local electric-pair-inhibit-predicate
+                (lambda (c)
+                  (if (char-equal c ?<)
+                      t
+                    (funcall old-predicate c))))))
 
-(setq org-default-notes-file
-      (expand-file-name "notes.org" org-directory))
+(use-package org
+  :ensure nil
+  
+  :custom
+  ;; prevent org from modifying the whitespace inside your code blocks
+  ;;(org-src-preserve-indentation t)
+  ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
+  (org-edit-src-content-indentation 0)
+  (org-directory "~/org")
+  (org-default-notes-file (expand-file-name "notes.org" org-directory))
+  (org-agenda-files (list org-directory))
+  
+  :hook
+  (org-mode . my/org-no-angle-brackets)
+  (org-mode . org-indent-mode)
+  ;; disable electric-indent-mode only for org buffers
+  ;; (org-mode . (lambda () (electric-indent-local-mode -1)))
+  )
 
-(setq org-agenda-files
-      (list org-directory))
+(use-package org-tempo
+  :ensure nil
+  :after org
+  :config
+  (dolist (template '(("el" . "src emacs-lisp")
+                      ("sh" . "src shell")
+                      ("js" . "src javascript")
+                      ("ts" . "src typescript")))
+    (add-to-list 'org-structure-template-alist template))
 
-(use-package org-modern
-  :hook (org-mode . org-modern-mode))
-
-(use-package toc-org
-  :hook (org-mode . toc-org-mode))
-
-(add-hook 'org-mode-hook #'org-indent-mode)
-
-(require 'org-tempo)
-
-;; Expansions
-(with-eval-after-load 'org
-  (add-to-list 'org-structure-template-alist
-                 '("el" . "src emacs-lisp"))
-
-  (add-to-list 'org-structure-template-alist
-               '("sh" . "src shell"))
-
-  (add-to-list 'org-structure-template-alist
-               '("js" . "src javascript"))
-
-  (add-to-list 'org-structure-template-alist
-               '("ts" . "src typescript")))
-
-(with-eval-after-load 'org
   (tempo-define-template
    "org-header"
    '("#+TITLE: " p n
@@ -53,15 +59,8 @@
      "* TABLE OF CONTENTS :toc:" n n)
    "<oh"))
 
-(defun my/org-no-angle-brackets ()
-  (let ((old-predicate electric-pair-inhibit-predicate))
-    (setq-local electric-pair-inhibit-predicate
-                (lambda (c)
-                  (if (char-equal c ?<)
-                      t
-                    (funcall old-predicate c))))))
-
-(add-hook 'org-mode-hook #'my/org-no-angle-brackets)
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
 
 (setq
  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
@@ -205,7 +204,7 @@
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 
 (use-package transient
-  :ensure t)
+  :ensure nil)
 
 (defun my/eval-init ()
   "Evaluate emacs `init.el' file."
@@ -226,6 +225,10 @@
      (lambda ()
        (interactive)
        (find-file "~/.config/emacs/config.org")))
+    ("t" "open todo.org"
+     (lambda ()
+       (interactive)
+       (find-file "~/org/todo.org")))
     ("i" "evaluate init.el" my/eval-init)]])
 
 (keymap-global-set "C-c g" #'my/menu-general)
