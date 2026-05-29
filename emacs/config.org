@@ -22,6 +22,8 @@
   - [[#import-shell-env][Import Shell Env]]
   - [[#jsts][JS+TS]]
 - [[#transient-maps][TRANSIENT MAPS]]
+  - [[#general-1][GENERAL]]
+  - [[#search--replace][SEARCH & REPLACE]]
   - [[#lsp-1][LSP]]
 
 * INIT
@@ -75,8 +77,13 @@
 ** GENERAL
 
 #+begin_src emacs-lisp
-  (setq org-src-preserve-indentation t)
-  (setq org-edit-src-content-indentation nil)
+  (setq org-default-notes-file "~/org")
+
+  (setq org-default-notes-file
+        (expand-file-name "notes.org" org-directory))
+
+  (setq org-agenda-files
+        (list org-directory))
 #+end_src
 
 ** MODERN
@@ -232,6 +239,19 @@
 
   ;; completion
   (keymap-global-set "C-;" #'completion-at-point)
+
+  ;; copy line
+  (defun my/copy-line ()
+    "Copy line without killing."
+    (interactive)
+    (save-excursion
+      (kill-new
+       (buffer-substring
+        (line-beginning-position)
+        (line-beginning-position 2))))
+    (message "Line copied"))
+
+  (keymap-global-set "C-c w" #'my/copy-line)
 #+end_src
 
 * AUTO-COMPLETION
@@ -322,11 +342,54 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
     :ensure t)
 #+end_src
 
+** GENERAL
+
+#+begin_src emacs-lisp
+    (defun my/eval-init ()
+      "Evaluate emacs `init.el' file."
+      (interactive)
+      (with-current-buffer
+          (find-file-noselect user-init-file)
+        (eval-buffer)
+        (message "Reloaded init.el")))
+
+    (transient-define-prefix my/menu-general ()
+      "General"
+      [["Buffer"
+        ("e" "evaluate buffer (elisp)" eval-buffer)
+        ("k" "kill buffer" kill-buffer)]
+
+       ["Config"
+        ("c" "open config.org"
+         (lambda ()
+           (interactive)
+           (find-file "~/.config/emacs/config.org")))
+        ("i" "evaluate init.el" my/eval-init)]])
+
+    (keymap-global-set "C-c g" #'my/menu-general)
+#+end_src
+
+** SEARCH & REPLACE
+
+#+begin_src emacs-lisp
+  (transient-define-prefix my/menu-search-&-replace ()
+    "Search & Replace"
+    [["Normal (All Instances After Cursor)"
+      ("ns" "string matches" replace-string)
+      ("nr" "regex matches" replace-regexp)]
+
+     ["Interactive (Use Chooses Action On Each Instance)"
+      ("is" "string matches" query-replace)
+      ("ir" "regex matches" query-replace-regexp)]])
+
+  (keymap-global-set "C-c r" #'my/menu-search-&-replace)
+#+end_src
+
 ** LSP
 
 #+begin_src emacs-lisp
-  (transient-define-prefix my/lsp-menu ()
-    "LSP + Diagnostics control panel"
+  (transient-define-prefix my/menu-lsp ()
+    "LSP + Diagnostics"
     [
      ;;["Navigation (xref)"
      ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
@@ -347,6 +410,6 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
       ("p" "previous error" flymake-goto-prev-error)
       ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
 
-  (keymap-global-set "C-c l" #'my/lsp-menu)
+  (keymap-global-set "C-c l" #'my/menu-lsp)
 #+end_src
 

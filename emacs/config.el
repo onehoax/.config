@@ -10,8 +10,13 @@
 
 (setq use-package-always-ensure t)
 
-(setq org-src-preserve-indentation t)
-(setq org-edit-src-content-indentation nil)
+(setq org-default-notes-file "~/org")
+
+(setq org-default-notes-file
+      (expand-file-name "notes.org" org-directory))
+
+(setq org-agenda-files
+      (list org-directory))
 
 (use-package org-modern
   :hook (org-mode . org-modern-mode))
@@ -136,6 +141,19 @@
 ;; completion
 (keymap-global-set "C-;" #'completion-at-point)
 
+;; copy line
+(defun my/copy-line ()
+  "Copy line without killing."
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (line-beginning-position)
+      (line-beginning-position 2))))
+  (message "Line copied"))
+
+(keymap-global-set "C-c w" #'my/copy-line)
+
 (use-package corfu
   :init
   (global-corfu-mode))
@@ -187,8 +205,43 @@
 (use-package transient
   :ensure t)
 
-(transient-define-prefix my/lsp-menu ()
-  "LSP + Diagnostics control panel"
+(defun my/eval-init ()
+  "Evaluate emacs `init.el' file."
+  (interactive)
+  (with-current-buffer
+      (find-file-noselect user-init-file)
+    (eval-buffer)
+    (message "Reloaded init.el")))
+
+(transient-define-prefix my/menu-general ()
+  "General"
+  [["Buffer"
+    ("e" "evaluate buffer (elisp)" eval-buffer)
+    ("k" "kill buffer" kill-buffer)]
+
+   ["Config"
+    ("c" "open config.org"
+     (lambda ()
+       (interactive)
+       (find-file "~/.config/emacs/config.org")))
+    ("i" "evaluate init.el" my/eval-init)]])
+
+(keymap-global-set "C-c g" #'my/menu-general)
+
+(transient-define-prefix my/menu-search-&-replace ()
+  "Search & Replace"
+  [["Normal (All Instances After Cursor)"
+    ("ns" "string matches" replace-string)
+    ("nr" "regex matches" replace-regexp)]
+
+   ["Interactive (Use Chooses Action On Each Instance)"
+    ("is" "string matches" query-replace)
+    ("ir" "regex matches" query-replace-regexp)]])
+
+(keymap-global-set "C-c r" #'my/menu-search-&-replace)
+
+(transient-define-prefix my/menu-lsp ()
+  "LSP + Diagnostics"
   [
    ;;["Navigation (xref)"
    ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
@@ -209,4 +262,4 @@
     ("p" "previous error" flymake-goto-prev-error)
     ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
 
-(keymap-global-set "C-c l" #'my/lsp-menu)
+(keymap-global-set "C-c l" #'my/menu-lsp)
