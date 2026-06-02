@@ -31,12 +31,15 @@
 ** LEXICAL BINDING
 
 #+begin_src emacs-lisp
+
 ;;; -*- lexical-binding: t; -*-
+
 #+end_src
 
 ** DAEMON-CLIENT REL
 
 #+begin_src bash :tangle no
+
 # enable emacs daemon
 systemctl --user enable emacs.service
 
@@ -56,11 +59,13 @@ ps aux | grep emacs # should see something like `emacs --fg-daemon`
 # set aliases for emacsclient
 alias ec='emacsclient -n -r -a ""'
 alias emacs='ec'
+
 #+end_src
 
 * PACKAGE MANAGER
 
 #+begin_src emacs-lisp
+
 (require 'package)
 
 (add-to-list 'package-archives
@@ -72,6 +77,7 @@ alias emacs='ec'
 (require 'use-package)
 
 (setq use-package-always-ensure t)
+
 #+end_src
 
 * ORG
@@ -79,6 +85,7 @@ alias emacs='ec'
 ** GENERAL
 
 #+begin_src emacs-lisp
+
 (defun my/org-no-angle-brackets ()
   (let ((old-predicate electric-pair-inhibit-predicate))
     (setq-local electric-pair-inhibit-predicate
@@ -105,11 +112,13 @@ alias emacs='ec'
   ;; disable electric-indent-mode only for org buffers
   ;; (org-mode . (lambda () (electric-indent-local-mode -1)))
   )
+
 #+end_src
 
 ** TEMPO
 
 #+begin_src emacs-lisp
+
 (use-package org-tempo
   :ensure nil
   :after org
@@ -129,18 +138,22 @@ alias emacs='ec'
      "#+STARTUP: content" n n
      "* TABLE OF CONTENTS :toc:" n n)
    "<oh"))
+
 #+end_src
 
 ** OTHER
 
 #+begin_src emacs-lisp
+
 (use-package toc-org
   :hook (org-mode . toc-org-mode))
+
 #+end_src
 
 * SANE DEFAULTS
 
 #+begin_src emacs-lisp
+
 (setq
  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
  ;; However, can't easily be disabled, so discard its contents.
@@ -199,32 +212,40 @@ alias emacs='ec'
 
 ;; Automatic pairing of delimeters
 (electric-pair-mode t)
+
 #+end_src
 
 * THEME
 
 #+begin_src emacs-lisp
+
 (load-theme 'wombat)
+
 #+end_src
 
 * SHELL
 
 #+begin_src emacs-lisp
+
 (add-hook 'shell-mode-hook
           (lambda ()
             (display-line-numbers-mode 0)))
+
 #+end_src
 
 * DISABLED COMMANDS
 
 #+begin_src emacs-lisp
+
 (put 'narrow-to-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
 #+end_src
 
 * KEYBINDINGS
 
 #+begin_src emacs-lisp
+
 ;; files
 (keymap-global-unset "C-x C-f")
 (keymap-global-set "C-x f" #'find-file)
@@ -249,11 +270,13 @@ alias emacs='ec'
 (keymap-global-set "C-c w" #'my/copy-line)
 
 (keymap-global-set "C-c s" #'shell)
+
 #+end_src
 
 * AUTO-COMPLETION
 
 #+begin_src emacs-lisp
+
 (use-package corfu
   :init
   (global-corfu-mode))
@@ -271,6 +294,7 @@ alias emacs='ec'
 
 ;; press `RET` only once to choose and execute option in (e)shell
 ;;(keymap-set corfu-map "RET" #'corfu-send)
+
 #+end_src
 
 * LSP
@@ -280,10 +304,12 @@ alias emacs='ec'
 Need this so that emacs daemon sees asdf executables:
 
 #+begin_src emacs-lisp
+
 (use-package exec-path-from-shell
   :if (daemonp)
   :config
   (exec-path-from-shell-initialize))
+
 #+end_src
 
 ** JS+TS
@@ -291,13 +317,16 @@ Need this so that emacs daemon sees asdf executables:
 Install js/ts server:
 
 #+begin_src bash :tangle no
+
 npm i -g @vtsls/language-server
 npm list -g
+
 #+end_src
 
 Eglot Setup:
 
 #+begin_src emacs-lisp
+
 (use-package eglot
   :ensure nil
   :hook ((js-ts-mode
@@ -309,11 +338,13 @@ Eglot Setup:
                   typescript-ts-mode
                   tsx-ts-mode)
                  . ("vtsls" "--stdio"))))
+
 #+end_src
 
 Declare file-mode associations:
 
 #+begin_src emacs-lisp
+
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
@@ -330,18 +361,22 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
              '(typescript-mode . typescript-ts-mode))
 
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
 #+end_src
 
 * TRANSIENT MAPS
 
 #+begin_src emacs-lisp
+
 (use-package transient
   :ensure nil)
+
 #+end_src
 
 ** GENERAL
 
 #+begin_src emacs-lisp
+
 (defun my/eval-init ()
   "Evaluate emacs `init.el' file."
   (interactive)
@@ -368,11 +403,13 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
     ("i" "evaluate init.el" my/eval-init)]])
 
 (keymap-global-set "C-c g" #'my/menu-general)
+
 #+end_src
 
 ** SEARCH & REPLACE
 
 #+begin_src emacs-lisp
+
 (transient-define-prefix my/menu-search-&-replace ()
   "Search & Replace"
   [["Normal (All Instances After Cursor)"
@@ -384,11 +421,13 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
     ("ir" "regex matches" query-replace-regexp)]])
 
 (keymap-global-set "C-c r" #'my/menu-search-&-replace)
+
 #+end_src
 
 ** LSP
 
 #+begin_src emacs-lisp
+
 (transient-define-prefix my/menu-lsp ()
   "LSP + Diagnostics"
   [
@@ -412,5 +451,6 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
     ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
 
 (keymap-global-set "C-c l" #'my/menu-lsp)
+
 #+end_src
 
