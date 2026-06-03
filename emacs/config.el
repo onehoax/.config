@@ -121,6 +121,9 @@
 ;; Automatic pairing of delimeters
 (electric-pair-mode t)
 
+;; Enable flymake for elisp files
+(add-hook 'emacs-lisp-mode-hook #'flymake-mode)
+
 (load-theme 'wombat)
 
 (add-hook 'shell-mode-hook
@@ -245,8 +248,17 @@
 
 (keymap-global-set "C-c r" #'my/menu-search-&-replace)
 
+(transient-define-prefix my/menu-diagnostics ()
+  "Diagnostics"
+  [["Flymake"
+    ("n" "next error" flymake-goto-next-error)
+    ("p" "previous error" flymake-goto-prev-error)
+    ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
+
+(keymap-global-set "C-c d" #'my/menu-diagnostics)
+
 (transient-define-prefix my/menu-lsp ()
-  "LSP + Diagnostics"
+  "LSP"
   [
    ;;["Navigation (xref)"
    ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
@@ -256,15 +268,10 @@
    ;; ("b" "back" xref-go-back) `M-,`
    ;; ("f" "forward" xref-go-forward)] `M-C-,`
 
-   ["Refactor (Eglot)"
+   ["Eglot"
     ("r" "rename symbol" eglot-rename)
     ("a" "code actions" eglot-code-actions)
     ("f" "format buffer" eglot-format)
-    ("s" "restart server" eglot-reconnect)]
-
-   ["Diagnostics (Flymake)"
-    ("n" "next error" flymake-goto-next-error)
-    ("p" "previous error" flymake-goto-prev-error)
-    ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
+    ("s" "restart server" eglot-reconnect)]])
 
 (keymap-global-set "C-c l" #'my/menu-lsp)

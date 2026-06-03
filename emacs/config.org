@@ -24,6 +24,7 @@
 - [[#transient-maps][TRANSIENT MAPS]]
   - [[#general-1][GENERAL]]
   - [[#search--replace][SEARCH & REPLACE]]
+  - [[#diagnostics][DIAGNOSTICS]]
   - [[#lsp-1][LSP]]
 
 * INIT
@@ -213,6 +214,9 @@ alias emacs='ec'
 ;; Automatic pairing of delimeters
 (electric-pair-mode t)
 
+;; Enable flymake for elisp files
+(add-hook 'emacs-lisp-mode-hook #'flymake-mode)
+
 #+end_src
 
 * THEME
@@ -349,11 +353,13 @@ Declare file-mode associations:
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
+
 #+end_src
 
 Handle cases where older non–Tree-sitter modes activate (many packages/file associations may default to them):
 
 #+begin_src emacs-lisp
+
 (add-to-list 'major-mode-remap-alist
              '(javascript-mode . js-ts-mode))
 
@@ -424,12 +430,27 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
 
 #+end_src
 
+** DIAGNOSTICS
+
+#+begin_src emacs-lisp
+
+(transient-define-prefix my/menu-diagnostics ()
+  "Diagnostics"
+  [["Flymake"
+    ("n" "next error" flymake-goto-next-error)
+    ("p" "previous error" flymake-goto-prev-error)
+    ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
+
+(keymap-global-set "C-c d" #'my/menu-diagnostics)
+
+#+end_src
+
 ** LSP
 
 #+begin_src emacs-lisp
 
 (transient-define-prefix my/menu-lsp ()
-  "LSP + Diagnostics"
+  "LSP"
   [
    ;;["Navigation (xref)"
    ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
@@ -439,16 +460,11 @@ Handle cases where older non–Tree-sitter modes activate (many packages/file as
    ;; ("b" "back" xref-go-back) `M-,`
    ;; ("f" "forward" xref-go-forward)] `M-C-,`
 
-   ["Refactor (Eglot)"
+   ["Eglot"
     ("r" "rename symbol" eglot-rename)
     ("a" "code actions" eglot-code-actions)
     ("f" "format buffer" eglot-format)
-    ("s" "restart server" eglot-reconnect)]
-
-   ["Diagnostics (Flymake)"
-    ("n" "next error" flymake-goto-next-error)
-    ("p" "previous error" flymake-goto-prev-error)
-    ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
+    ("s" "restart server" eglot-reconnect)]])
 
 (keymap-global-set "C-c l" #'my/menu-lsp)
 
