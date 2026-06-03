@@ -20,13 +20,13 @@
 
 ** EXPLANATION
 
-UI settings belong in 'early-init.el` because they establish frame defaults before any GUI frame is created. This ensures
+UI settings belong in early-init.el because they establish frame defaults before any GUI frame is created. This ensures
 they apply correctly to daemon/client frames created later via emacsclient.
 
 *** MORE CONTEXT
 
-By the time `init.el` runs, the first frame may already exist, so frame/UI settings can be too late.  The key difference
-is that settings established in `early-init.el` become part of Emacs's startup defaults before any client frame is ever
+By the time init.el runs, the first frame may already exist, so frame/UI settings can be too late.  The key difference
+is that settings established in early-init.el become part of Emacs's startup defaults before any client frame is ever
 created.
 
 ** SETTINGS
