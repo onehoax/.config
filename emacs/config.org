@@ -1,6 +1,6 @@
 #+TITLE: GNU Emacs Config
 #+AUTHOR: Andres Osorio
-#+DESCRIPTION: Personal Emacs Config.
+#+DESCRIPTION: Personal Emacs config.
 #+STARTUP: content
 
 * TABLE OF CONTENTS :toc:
@@ -154,6 +154,63 @@ alias emacs='ec'
 * SANE DEFAULTS
 
 #+begin_src emacs-lisp
+;; (defun my/setup-frame (frame)
+;;   "Frame settings to be applied at the correct time (daemon vs non-daemon)."
+;;   (with-selected-frame frame
+;;     (scroll-bar-mode nil)
+;;     (tool-bar-mode nil)
+;;     (menu-bar-mode nil)))
+
+;; ;; Fullscreen on init
+;; ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;; ;; Set frame dimensions on init and subsequent frames created
+;; (setq initial-frame-alist
+;;       '((width . 150)
+;;         (height . 50))
+
+;;       default-frame-alist initial-frame-alist)
+
+;; (use-package emacs
+;;   :ensure nil
+
+;;   :init
+
+;;   :config
+;;   (if (daemonp)
+;;       (add-hook 'after-make-frame-functions #'my/setup-frame)
+;;     (my/setup-frame (selected-frame)))
+
+;;   :custom
+;;   ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
+;;   ;; However, can't easily be disabled, so discard its contents.
+;;   (custom-file "/dev/null")
+
+;;   ;; No backup files, please
+;;   (make-backup-files nil)
+
+;;   ;; Disable auto-save
+;;   (auto-save-default nil)
+
+;;   ;; Disable lock files
+;;   (create-lockfiles nil)
+
+;;   ;; Inhibit startup dashboard
+;;   (inhibit-startup-message t)
+
+;;   ;; Flash the UI instead of beeping
+;;   (visible-bell t)
+
+;;   ;; Show line numbers
+;;   (global-display-line-numbers-mode t)
+
+;;   ;; Show column number on mode line
+;;   (column-number-mode t)
+
+;;   ;; Very nice smooth scrolling on modern Emacs.
+;;   (pixel-scroll-precision-mode 1)
+
+;; )
 
 (setq
  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
@@ -173,7 +230,9 @@ alias emacs='ec'
  inhibit-startup-message t
 
  ;; Flash the UI instead of beeping
- visible-bell t)
+ visible-bell t
+
+ fill-column 120)
 
 ;; Disable visible scrollbar
 (scroll-bar-mode -1)
@@ -197,11 +256,11 @@ alias emacs='ec'
 ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;; Set frame dimensions on init and subsequent frames created
-(setq initial-frame-alist
-      '((width . 150)
-        (height . 50))
+;( setq initial-frame-alist
+ ;;      '((width . 150)
+ ;;        (height . 50))
 
-      default-frame-alist initial-frame-alist)
+ ;;      default-frame-alist initial-frame-alist)
 
 ;; Tabs to spaces
 (setq-default
@@ -216,6 +275,13 @@ alias emacs='ec'
 
 ;; Enable flymake for elisp files
 (add-hook 'emacs-lisp-mode-hook #'flymake-mode)
+
+;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (with-current-buffer "*scratch*"
+              (kill-local-variable 'left-margin-width)
+              (set-window-buffer nil (current-buffer)))))
 
 #+end_src
 
