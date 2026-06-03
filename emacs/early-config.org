@@ -20,7 +20,7 @@
 
 ** EXPLANATION
 
-UI settings belong in `early-init.el` because they establish frame defaults before any GUI frame is created. This ensures
+UI settings belong in 'early-init.el` because they establish frame defaults before any GUI frame is created. This ensures
 they apply correctly to daemon/client frames created later via emacsclient.
 
 *** MORE CONTEXT
