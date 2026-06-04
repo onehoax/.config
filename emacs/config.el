@@ -164,31 +164,39 @@
 (use-package toc-org
   :hook (org-mode . toc-org-mode))
 
+(defun my/corfu-minibuffer-p ()
+  (not (or (bound-and-true-p mct--active)
+           (bound-and-true-p vertico--input)
+           (eq (current-local-map) read-passwd-map))))
+
+(defun my/corfu-enable-eshell ()
+  (setq-local corfu-auto nil)
+  (corfu-mode))
+
 (use-package corfu
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
 
-;; minibuffer
-(setq global-corfu-minibuffer
-      (lambda ()
-        (not (or (bound-and-true-p mct--active)
-                 (bound-and-true-p vertico--input)
-                 (eq (current-local-map) read-passwd-map)))))
+  :custom
+  (global-corfu-minibuffer #'my/corfu-minibuffer-p)
 
-(add-hook 'eshell-mode-hook (lambda ()
-                              (setq-local corfu-auto nil)
-                              (corfu-mode)))
+  :hook
+  (eshell-mode . my/corfu-enable-eshell))
 
 (use-package exec-path-from-shell
   :if (daemonp)
+  
   :config
   (exec-path-from-shell-initialize))
 
 (use-package eglot
   :ensure nil
-  :hook ((js-ts-mode
-          typescript-ts-mode
-          tsx-ts-mode) . eglot-ensure)
+  
+  :hook
+  ((js-ts-mode
+    typescript-ts-mode
+    tsx-ts-mode) . eglot-ensure)
+  
   :config
   (add-to-list 'eglot-server-programs
                '((js-ts-mode
