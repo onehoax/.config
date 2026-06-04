@@ -12,60 +12,23 @@
 
 (setq use-package-always-ensure t)
 
-(defun my/org-no-angle-brackets ()
-  (let ((old-predicate electric-pair-inhibit-predicate))
-    (setq-local electric-pair-inhibit-predicate
-                (lambda (c)
-                  (if (char-equal c ?<)
-                      t
-                    (funcall old-predicate c))))))
-
-(use-package org
-  :ensure nil
-  
-  :custom
-  ;; prevent org from modifying the whitespace inside your code blocks
-  ;;(org-src-preserve-indentation t)
-  ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
-  (org-edit-src-content-indentation 0)
-  (org-directory "~/org")
-  (org-default-notes-file (expand-file-name "notes.org" org-directory))
-  (org-agenda-files (list org-directory))
-  
-  :hook
-  (org-mode . my/org-no-angle-brackets)
-  (org-mode . org-indent-mode)
-  ;; disable electric-indent-mode only for org buffers
-  ;; (org-mode . (lambda () (electric-indent-local-mode -1)))
-  )
-
-(use-package org-tempo
-  :ensure nil
-  :after org
-  :config
-  (dolist (template '(("el" . "src emacs-lisp")
-                      ("sh" . "src shell")
-                      ("js" . "src javascript")
-                      ("ts" . "src typescript")))
-    (add-to-list 'org-structure-template-alist template))
-
-  (tempo-define-template
-   "org-header"
-   '("#+TITLE: " p n
-     "#+AUTHOR: Andres Osorio" n
-     "#+DESCRIPTION: " n
-     "#+DATE: " (format-time-string "%Y-%m-%d") n
-     "#+STARTUP: content" n n
-     "* TABLE OF CONTENTS :toc:" n n)
-   "<oh"))
-
-(use-package toc-org
-  :hook (org-mode . toc-org-mode))
-
 (defun my/fix-scratch-margin ()
   (with-current-buffer "*scratch*"
     (kill-local-variable 'left-margin-width)
     (set-window-buffer nil (current-buffer))))
+
+(defun my/copy-line ()
+  "Copy line without killing."
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (line-beginning-position)
+      (line-beginning-position 2))))
+  (message "Line copied"))
+
+(defun my/shell-mode-setup ()
+  (display-line-numbers-mode 0))
 
 (use-package emacs
   :ensure nil
@@ -77,6 +40,9 @@
    tab-width 2)
 
   :config
+  ;; Theme
+  (load-theme 'wombat t)
+
   ;; Show line numbers
   (global-display-line-numbers-mode t)
 
@@ -91,6 +57,30 @@
 
   ;; Automatic pairing of delimeters
   (electric-pair-mode t)
+
+  ;; Replace selected region with input
+  (delete-selection-mode t)
+
+  ;; Disabled commands by default
+  (put 'narrow-to-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+
+  ;;;; Keybindings
+  ;; Files
+  (keymap-global-unset "C-x C-f")
+  (keymap-global-set "C-x f" #'find-file)
+
+  ;; Buffers
+  (keymap-global-set "C-x C-b" #'buffer-menu)
+
+  ;; Completion
+  (keymap-global-set "C-;" #'completion-at-point)
+
+  ;; Copy line
+  (keymap-global-set "C-c w" #'my/copy-line)
+
+  ;; Invoke shell
+  (keymap-global-set "C-c s" #'shell)
 
   :custom
   ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
@@ -114,50 +104,65 @@
   
   ;; Column boundary
   (fill-column 120)
-
-  ;; Replace selected region with input
-  (delete-selection-mode t)
   
   :hook
+  ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
+  (emacs-startup . my/fix-scratch-margin)
+
   ;; Enable flymake for elisp files
   (emacs-lisp-mode . flymake-mode)
 
-  ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
-  (emacs-startup . my/fix-scratch-margin))
+  ;; Disable line numbers in shell buffers
+  (shell-mode . my/shell-mode-setup))
 
-(load-theme 'wombat)
+(defun my/org-no-angle-brackets ()
+  (let ((old-predicate electric-pair-inhibit-predicate))
+    (setq-local electric-pair-inhibit-predicate
+                (lambda (c)
+                  (if (char-equal c ?<)
+                      t
+                    (funcall old-predicate c))))))
 
-(add-hook 'shell-mode-hook
-          (lambda ()
-            (display-line-numbers-mode 0)))
+(use-package org
+  :ensure nil
+  
+  :custom
+  ;; prevent org from modifying the whitespace inside your code blocks
+  ;;(org-src-preserve-indentation t)
+  ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
+  (org-edit-src-content-indentation 0)
+  (org-directory "~/org")
+  (org-default-notes-file (expand-file-name "notes.org" org-directory))
+  (org-agenda-files (list org-directory))
+  
+  :hook
+  (org-mode . my/org-no-angle-brackets)
+  (org-mode . org-indent-mode))
 
-(put 'narrow-to-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
+(use-package org-tempo
+  :ensure nil
+  
+  :after org
+  
+  :config
+  (dolist (template '(("el" . "src emacs-lisp")
+                      ("sh" . "src shell")
+                      ("js" . "src javascript")
+                      ("ts" . "src typescript")))
+    (add-to-list 'org-structure-template-alist template))
 
-;; files
-(keymap-global-unset "C-x C-f")
-(keymap-global-set "C-x f" #'find-file)
+  (tempo-define-template
+   "org-header"
+   '("#+TITLE: " p n
+     "#+AUTHOR: Andres Osorio" n
+     "#+DESCRIPTION: " n
+     "#+DATE: " (format-time-string "%Y-%m-%d") n
+     "#+STARTUP: content" n n
+     "* TABLE OF CONTENTS :toc:" n n)
+   "<oh"))
 
-;; buffers
-(keymap-global-set "C-x C-b" #'buffer-menu)
-
-;; completion
-(keymap-global-set "C-;" #'completion-at-point)
-
-;; copy line
-(defun my/copy-line ()
-  "Copy line without killing."
-  (interactive)
-  (save-excursion
-    (kill-new
-     (buffer-substring
-      (line-beginning-position)
-      (line-beginning-position 2))))
-  (message "Line copied"))
-
-(keymap-global-set "C-c w" #'my/copy-line)
-
-(keymap-global-set "C-c s" #'shell)
+(use-package toc-org
+  :hook (org-mode . toc-org-mode))
 
 (use-package corfu
   :init
@@ -173,9 +178,6 @@
 (add-hook 'eshell-mode-hook (lambda ()
                               (setq-local corfu-auto nil)
                               (corfu-mode)))
-
-;; press `RET` only once to choose and execute option in (e)shell
-;;(keymap-set corfu-map "RET" #'corfu-send)
 
 (use-package exec-path-from-shell
   :if (daemonp)

@@ -4,30 +4,26 @@
 #+STARTUP: content
 
 * TABLE OF CONTENTS :toc:
-- [[#init][INIT]]
+- [[#general][GENERAL]]
   - [[#lexical-binding][LEXICAL BINDING]]
-  - [[#daemon-client-rel][DAEMON-CLIENT REL]]
-- [[#package-manager][PACKAGE MANAGER]]
+  - [[#daemon-client][DAEMON-CLIENT]]
+  - [[#package-manager][PACKAGE MANAGER]]
+  - [[#settings][SETTINGS]]
 - [[#org][ORG]]
-  - [[#general][GENERAL]]
+  - [[#general-1][GENERAL]]
   - [[#tempo][TEMPO]]
-  - [[#other][OTHER]]
-- [[#sane-defaults][SANE DEFAULTS]]
-- [[#theme][THEME]]
-- [[#shell][SHELL]]
-- [[#disabled-commands][DISABLED COMMANDS]]
-- [[#keybindings][KEYBINDINGS]]
+  - [[#toc][TOC]]
 - [[#auto-completion][AUTO-COMPLETION]]
 - [[#lsp][LSP]]
   - [[#import-shell-env][Import Shell Env]]
   - [[#jsts][JS+TS]]
 - [[#transient-maps][TRANSIENT MAPS]]
-  - [[#general-1][GENERAL]]
+  - [[#general-2][GENERAL]]
   - [[#search--replace][SEARCH & REPLACE]]
   - [[#diagnostics][DIAGNOSTICS]]
   - [[#lsp-1][LSP]]
 
-* INIT
+* GENERAL
 
 ** LEXICAL BINDING
 
@@ -35,7 +31,7 @@
 ;;; -*- lexical-binding: t; -*-
 #+end_src
 
-** DAEMON-CLIENT REL
+** DAEMON-CLIENT
 
 #+begin_src bash :tangle no
 # enable emacs daemon
@@ -59,7 +55,7 @@ alias ec='emacsclient -n -r -a ""'
 alias emacs='ec'
 #+end_src
 
-* PACKAGE MANAGER
+** PACKAGE MANAGER
 
 #+begin_src emacs-lisp
 (require 'package)
@@ -73,6 +69,113 @@ alias emacs='ec'
 (require 'use-package)
 
 (setq use-package-always-ensure t)
+#+end_src
+
+** SETTINGS
+
+#+begin_src emacs-lisp
+(defun my/fix-scratch-margin ()
+  (with-current-buffer "*scratch*"
+    (kill-local-variable 'left-margin-width)
+    (set-window-buffer nil (current-buffer))))
+
+(defun my/copy-line ()
+  "Copy line without killing."
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (line-beginning-position)
+      (line-beginning-position 2))))
+  (message "Line copied"))
+
+(defun my/shell-mode-setup ()
+  (display-line-numbers-mode 0))
+
+(use-package emacs
+  :ensure nil
+
+  :init
+  ;; Tabs to spaces and width
+  (setq-default
+   indent-tabs-mode nil
+   tab-width 2)
+
+  :config
+  ;; Theme
+  (load-theme 'wombat t)
+
+  ;; Show line numbers
+  (global-display-line-numbers-mode t)
+
+  ;; Show column number on mode line
+  (column-number-mode t)
+
+  ;; Very nice smooth scrolling on modern Emacs.
+  (pixel-scroll-precision-mode t)
+
+  ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
+  (global-auto-revert-mode 1)
+
+  ;; Automatic pairing of delimeters
+  (electric-pair-mode t)
+
+  ;; Replace selected region with input
+  (delete-selection-mode t)
+
+  ;; Disabled commands by default
+  (put 'narrow-to-region 'disabled nil)
+  (put 'upcase-region 'disabled nil)
+
+  ;;;; Keybindings
+  ;; Files
+  (keymap-global-unset "C-x C-f")
+  (keymap-global-set "C-x f" #'find-file)
+
+  ;; Buffers
+  (keymap-global-set "C-x C-b" #'buffer-menu)
+
+  ;; Completion
+  (keymap-global-set "C-;" #'completion-at-point)
+
+  ;; Copy line
+  (keymap-global-set "C-c w" #'my/copy-line)
+
+  ;; Invoke shell
+  (keymap-global-set "C-c s" #'shell)
+
+  :custom
+  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
+  ;; However, can't easily be disabled, so discard its contents.
+  (custom-file "/dev/null")
+
+  ;; No backup files, please
+  (make-backup-files nil)
+
+  ;; Disable auto-save
+  (auto-save-default nil)
+
+  ;; Disable lock files
+  (create-lockfiles nil)
+
+  ;; Inhibit startup dashboard
+  (inhibit-startup-message t)
+
+  ;; Flash the UI instead of beeping
+  (visible-bell t)
+  
+  ;; Column boundary
+  (fill-column 120)
+  
+  :hook
+  ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
+  (emacs-startup . my/fix-scratch-margin)
+
+  ;; Enable flymake for elisp files
+  (emacs-lisp-mode . flymake-mode)
+
+  ;; Disable line numbers in shell buffers
+  (shell-mode . my/shell-mode-setup))
 #+end_src
 
 * ORG
@@ -102,10 +205,7 @@ alias emacs='ec'
   
   :hook
   (org-mode . my/org-no-angle-brackets)
-  (org-mode . org-indent-mode)
-  ;; disable electric-indent-mode only for org buffers
-  ;; (org-mode . (lambda () (electric-indent-local-mode -1)))
-  )
+  (org-mode . org-indent-mode))
 #+end_src
 
 ** TEMPO
@@ -113,7 +213,9 @@ alias emacs='ec'
 #+begin_src emacs-lisp
 (use-package org-tempo
   :ensure nil
+  
   :after org
+  
   :config
   (dolist (template '(("el" . "src emacs-lisp")
                       ("sh" . "src shell")
@@ -132,128 +234,11 @@ alias emacs='ec'
    "<oh"))
 #+end_src
 
-** OTHER
+** TOC
 
 #+begin_src emacs-lisp
 (use-package toc-org
   :hook (org-mode . toc-org-mode))
-#+end_src
-
-* SANE DEFAULTS
-
-#+begin_src emacs-lisp
-(defun my/fix-scratch-margin ()
-  (with-current-buffer "*scratch*"
-    (kill-local-variable 'left-margin-width)
-    (set-window-buffer nil (current-buffer))))
-
-(use-package emacs
-  :ensure nil
-
-  :init
-  ;; Tabs to spaces and width
-  (setq-default
-   indent-tabs-mode nil
-   tab-width 2)
-
-  :config
-  ;; Show line numbers
-  (global-display-line-numbers-mode t)
-
-  ;; Show column number on mode line
-  (column-number-mode t)
-
-  ;; Very nice smooth scrolling on modern Emacs.
-  (pixel-scroll-precision-mode t)
-
-  ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
-  (global-auto-revert-mode 1)
-
-  ;; Automatic pairing of delimeters
-  (electric-pair-mode t)
-
-  :custom
-  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
-  ;; However, can't easily be disabled, so discard its contents.
-  (custom-file "/dev/null")
-
-  ;; No backup files, please
-  (make-backup-files nil)
-
-  ;; Disable auto-save
-  (auto-save-default nil)
-
-  ;; Disable lock files
-  (create-lockfiles nil)
-
-  ;; Inhibit startup dashboard
-  (inhibit-startup-message t)
-
-  ;; Flash the UI instead of beeping
-  (visible-bell t)
-  
-  ;; Column boundary
-  (fill-column 120)
-
-  ;; Replace selected region with input
-  (delete-selection-mode t)
-  
-  :hook
-  ;; Enable flymake for elisp files
-  (emacs-lisp-mode . flymake-mode)
-
-  ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
-  (emacs-startup . my/fix-scratch-margin))
-#+end_src
-
-* THEME
-
-#+begin_src emacs-lisp
-(load-theme 'wombat)
-#+end_src
-
-* SHELL
-
-#+begin_src emacs-lisp
-(add-hook 'shell-mode-hook
-          (lambda ()
-            (display-line-numbers-mode 0)))
-#+end_src
-
-* DISABLED COMMANDS
-
-#+begin_src emacs-lisp
-(put 'narrow-to-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-#+end_src
-
-* KEYBINDINGS
-
-#+begin_src emacs-lisp
-;; files
-(keymap-global-unset "C-x C-f")
-(keymap-global-set "C-x f" #'find-file)
-
-;; buffers
-(keymap-global-set "C-x C-b" #'buffer-menu)
-
-;; completion
-(keymap-global-set "C-;" #'completion-at-point)
-
-;; copy line
-(defun my/copy-line ()
-  "Copy line without killing."
-  (interactive)
-  (save-excursion
-    (kill-new
-     (buffer-substring
-      (line-beginning-position)
-      (line-beginning-position 2))))
-  (message "Line copied"))
-
-(keymap-global-set "C-c w" #'my/copy-line)
-
-(keymap-global-set "C-c s" #'shell)
 #+end_src
 
 * AUTO-COMPLETION
@@ -273,9 +258,6 @@ alias emacs='ec'
 (add-hook 'eshell-mode-hook (lambda ()
                               (setq-local corfu-auto nil)
                               (corfu-mode)))
-
-;; press `RET` only once to choose and execute option in (e)shell
-;;(keymap-set corfu-map "RET" #'corfu-send)
 #+end_src
 
 * LSP
