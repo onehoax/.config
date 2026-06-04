@@ -154,135 +154,68 @@ alias emacs='ec'
 * SANE DEFAULTS
 
 #+begin_src emacs-lisp
-;; (defun my/setup-frame (frame)
-;;   "Frame settings to be applied at the correct time (daemon vs non-daemon)."
-;;   (with-selected-frame frame
-;;     (scroll-bar-mode nil)
-;;     (tool-bar-mode nil)
-;;     (menu-bar-mode nil)))
+(defun my/fix-scratch-margin ()
+  (with-current-buffer "*scratch*"
+    (kill-local-variable 'left-margin-width)
+    (set-window-buffer nil (current-buffer))))
 
-;; ;; Fullscreen on init
-;; ;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(use-package emacs
+  :ensure nil
 
-;; ;; Set frame dimensions on init and subsequent frames created
-;; (setq initial-frame-alist
-;;       '((width . 150)
-;;         (height . 50))
+  :init
+  ;; Tabs to spaces and width
+  (setq-default
+   indent-tabs-mode nil
+   tab-width 2)
 
-;;       default-frame-alist initial-frame-alist)
+  :config
+  ;; Show line numbers
+  (global-display-line-numbers-mode t)
 
-;; (use-package emacs
-;;   :ensure nil
+  ;; Show column number on mode line
+  (column-number-mode t)
 
-;;   :init
+  ;; Very nice smooth scrolling on modern Emacs.
+  (pixel-scroll-precision-mode t)
 
-;;   :config
-;;   (if (daemonp)
-;;       (add-hook 'after-make-frame-functions #'my/setup-frame)
-;;     (my/setup-frame (selected-frame)))
+  ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
+  (global-auto-revert-mode 1)
 
-;;   :custom
-;;   ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
-;;   ;; However, can't easily be disabled, so discard its contents.
-;;   (custom-file "/dev/null")
+  ;; Automatic pairing of delimeters
+  (electric-pair-mode t)
 
-;;   ;; No backup files, please
-;;   (make-backup-files nil)
+  :custom
+  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
+  ;; However, can't easily be disabled, so discard its contents.
+  (custom-file "/dev/null")
 
-;;   ;; Disable auto-save
-;;   (auto-save-default nil)
+  ;; No backup files, please
+  (make-backup-files nil)
 
-;;   ;; Disable lock files
-;;   (create-lockfiles nil)
+  ;; Disable auto-save
+  (auto-save-default nil)
 
-;;   ;; Inhibit startup dashboard
-;;   (inhibit-startup-message t)
+  ;; Disable lock files
+  (create-lockfiles nil)
 
-;;   ;; Flash the UI instead of beeping
-;;   (visible-bell t)
+  ;; Inhibit startup dashboard
+  (inhibit-startup-message t)
 
-;;   ;; Show line numbers
-;;   (global-display-line-numbers-mode t)
+  ;; Flash the UI instead of beeping
+  (visible-bell t)
+  
+  ;; Column boundary
+  (fill-column 120)
 
-;;   ;; Show column number on mode line
-;;   (column-number-mode t)
+  ;; Replace selected region with input
+  (delete-selection-mode t)
+  
+  :hook
+  ;; Enable flymake for elisp files
+  (emacs-lisp-mode . flymake-mode)
 
-;;   ;; Very nice smooth scrolling on modern Emacs.
-;;   (pixel-scroll-precision-mode 1)
-
-;; )
-
-(setq
- ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
- ;; However, can't easily be disabled, so discard its contents.
- custom-file "/dev/null"
-
- ;; No backup files, please
- make-backup-files nil
-
- ;; Disable auto-save
- auto-save-default nil
-
- ;; Disable lock files
- create-lockfiles nil
-
- ;; Inhibit startup dashboard
- inhibit-startup-message t
-
- ;; Flash the UI instead of beeping
- visible-bell t
-
- fill-column 120)
-
-;; Disable visible scrollbar
-(scroll-bar-mode -1)
-
-;; Disable the toolbar
-(tool-bar-mode -1)
-
-;; Disable the menu bar
-(menu-bar-mode -1)
-
-;; Show line numbers
-(global-display-line-numbers-mode 1)
-
-;; Show column number on mode line
-(column-number-mode 1)
-
-;; Very nice smooth scrolling on modern Emacs.
-(pixel-scroll-precision-mode 1)
-
-;; Fullscreen on init
-;;(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-;; Set frame dimensions on init and subsequent frames created
-;( setq initial-frame-alist
- ;;      '((width . 150)
- ;;        (height . 50))
-
- ;;      default-frame-alist initial-frame-alist)
-
-;; Tabs to spaces
-(setq-default
- indent-tabs-mode nil
- tab-width 2)
-
-;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
-(global-auto-revert-mode 1)
-
-;; Automatic pairing of delimeters
-(electric-pair-mode t)
-
-;; Enable flymake for elisp files
-(add-hook 'emacs-lisp-mode-hook #'flymake-mode)
-
-;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (with-current-buffer "*scratch*"
-              (kill-local-variable 'left-margin-width)
-              (set-window-buffer nil (current-buffer)))))
-
+  ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
+  (emacs-startup . my/fix-scratch-margin))
 #+end_src
 
 * THEME
