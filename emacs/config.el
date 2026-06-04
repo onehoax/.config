@@ -125,67 +125,6 @@
   ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
   (emacs-startup . my/fix-scratch-margin))
 
-;; (setq
-;;  ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
-;;  ;; However, can't easily be disabled, so discard its contents.
-;;  custom-file "/dev/null"
-
-;;  ;; No backup files, please
-;;  make-backup-files nil
-
-;;  ;; Disable auto-save
-;;  auto-save-default nil
-
-;;  ;; Disable lock files
-;;  create-lockfiles nil
-
-;;  ;; Inhibit startup dashboard
-;;  inhibit-startup-message t
-
-;;  ;; Flash the UI instead of beeping
-;;  visible-bell t
-
-;;  fill-column 120)
-
-;; ;; Disable visible scrollbar
-;; (scroll-bar-mode -1)
-
-;; ;; Disable the toolbar
-;; (tool-bar-mode -1)
-
-;; ;; Disable the menu bar
-;; (menu-bar-mode -1)
-
-;; ;; Show line numbers
-;; (global-display-line-numbers-mode 1)
-
-;; ;; Show column number on mode line
-;; (column-number-mode 1)
-
-;; ;; Very nice smooth scrolling on modern Emacs.
-;; (pixel-scroll-precision-mode 1)
-
-;; ;; Tabs to spaces
-;; (setq-default
-;;  indent-tabs-mode nil
-;;  tab-width 2)
-
-;; ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
-;; (global-auto-revert-mode 1)
-
-;; ;; Automatic pairing of delimeters
-;; (electric-pair-mode t)
-
-;; ;; Enable flymake for elisp files
-;; (add-hook 'emacs-lisp-mode-hook #'flymake-mode)
-
-;; ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
-;; (add-hook 'emacs-startup-hook
-;;           (lambda ()
-;;             (with-current-buffer "*scratch*"
-;;               (kill-local-variable 'left-margin-width)
-;;               (set-window-buffer nil (current-buffer)))))
-
 (load-theme 'wombat)
 
 (add-hook 'shell-mode-hook

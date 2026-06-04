@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; Frame dimensions on init and subsequent frames created
+;; Frame settings on init and subsequent frames created
 (setq initial-frame-alist
       '((width . 150)
         (height . 50)
