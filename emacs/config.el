@@ -65,23 +65,6 @@
   (put 'narrow-to-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
 
-  ;;;; Keybindings
-  ;; Files
-  (keymap-global-unset "C-x C-f")
-  (keymap-global-set "C-x f" #'find-file)
-
-  ;; Buffers
-  (keymap-global-set "C-x C-b" #'buffer-menu)
-
-  ;; Completion
-  (keymap-global-set "C-;" #'completion-at-point)
-
-  ;; Copy line
-  (keymap-global-set "C-c w" #'my/copy-line)
-
-  ;; Invoke shell
-  (keymap-global-set "C-c s" #'shell)
-
   :custom
   ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
   ;; However, can't easily be disabled, so discard its contents.
@@ -104,6 +87,13 @@
   
   ;; Column boundary
   (fill-column 120)
+
+  :bind
+  (("C-x f" . find-file)
+   ("C-x C-b" . buffer-menu)
+   ("C-c w" . my/copy-line)
+   ("C-c s" . shell)
+   ("C-;" . completion-at-point))
   
   :hook
   ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
@@ -191,31 +181,32 @@
 
 (use-package eglot
   :ensure nil
-  
-  :hook
-  ((js-ts-mode
-    typescript-ts-mode
-    tsx-ts-mode) . eglot-ensure)
+
+  :init
+  ;; File associations
+  (dolist (association '(("\\.ts\\'" . typescript-ts-mode)
+                         ("\\.js\\'" . js-ts-mode)
+                         ("\\.tsx\\'" . tsx-ts-mode)
+                         ("\\.jsx\\'" . tsx-ts-mode)))
+    (add-to-list 'auto-mode-alist association))
+
+  ;; Prefer Tree-sitter modes
+  (dolist (remap '((javascript-mode . js-ts-mode)
+                   (typescript-mode . typescript-ts-mode)))
+    (add-to-list 'major-mode-remap-alist remap))
   
   :config
+  ;; Language server
   (add-to-list 'eglot-server-programs
                '((js-ts-mode
                   typescript-ts-mode
                   tsx-ts-mode)
-                 . ("vtsls" "--stdio"))))
-
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . tsx-ts-mode))
-
-(add-to-list 'major-mode-remap-alist
-             '(javascript-mode . js-ts-mode))
-
-(add-to-list 'major-mode-remap-alist
-             '(typescript-mode . typescript-ts-mode))
-
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+                 . ("vtsls" "--stdio")))
+  
+  :hook
+  ((js-ts-mode
+    typescript-ts-mode
+    tsx-ts-mode) . eglot-ensure))
 
 (use-package transient
   :ensure nil)
