@@ -208,9 +208,6 @@
     typescript-ts-mode
     tsx-ts-mode) . eglot-ensure))
 
-(use-package transient
-  :ensure nil)
-
 (defun my/eval-init ()
   "Evaluate emacs `init.el' file."
   (interactive)
@@ -219,61 +216,63 @@
     (eval-buffer)
     (message "Reloaded init.el")))
 
-(transient-define-prefix my/menu-general ()
-  "General"
-  [["Buffer"
-    ("e" "evaluate buffer (elisp)" eval-buffer)
-    ("k" "kill buffer" kill-buffer)]
+(use-package transient
+  :ensure nil
 
-   ["Config"
-    ("c" "open config.org"
-     (lambda ()
-       (interactive)
-       (find-file "~/.config/emacs/config.org")))
-    ("t" "open todo.org"
-     (lambda ()
-       (interactive)
-       (find-file "~/org/todo.org")))
-    ("i" "evaluate init.el" my/eval-init)]])
+  :config
+  (transient-define-prefix my/menu-general ()
+                           "General"
+                           [["Buffer"
+                             ("e" "evaluate buffer (elisp)" eval-buffer)
+                             ("k" "kill buffer" kill-buffer)]
 
-(keymap-global-set "C-c g" #'my/menu-general)
+                            ["Config"
+                             ("c" "open config.org"
+                              (lambda ()
+                                (interactive)
+                                (find-file "~/.config/emacs/config.org")))
+                             ("t" "open todo.org"
+                              (lambda ()
+                                (interactive)
+                                (find-file "~/org/todo.org")))
+                             ("i" "evaluate init.el" my/eval-init)]])
 
-(transient-define-prefix my/menu-search-&-replace ()
-  "Search & Replace"
-  [["Normal (All Instances After Cursor)"
-    ("ns" "string matches" replace-string)
-    ("nr" "regex matches" replace-regexp)]
+  (transient-define-prefix my/menu-search-replace ()
+                           "Search & Replace"
+                           [["Normal (All Instances After Cursor)"
+                             ("ns" "string matches" replace-string)
+                             ("nr" "regex matches" replace-regexp)]
 
-   ["Interactive (Use Chooses Action On Each Instance)"
-    ("is" "string matches" query-replace)
-    ("ir" "regex matches" query-replace-regexp)]])
+                            ["Interactive (User Chooses Action On Each Instance)"
+                             ("is" "string matches" query-replace)
+                             ("ir" "regex matches" query-replace-regexp)]])
 
-(keymap-global-set "C-c r" #'my/menu-search-&-replace)
+  (transient-define-prefix my/menu-diagnostics ()
+                           "Diagnostics"
+                           [["Flymake"
+                             ("n" "next error" flymake-goto-next-error)
+                             ("p" "previous error" flymake-goto-prev-error)
+                             ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
 
-(transient-define-prefix my/menu-diagnostics ()
-  "Diagnostics"
-  [["Flymake"
-    ("n" "next error" flymake-goto-next-error)
-    ("p" "previous error" flymake-goto-prev-error)
-    ("l" "list diagnostics" flymake-show-buffer-diagnostics)]])
+  (transient-define-prefix my/menu-lsp ()
+                           "LSP"
+                           [
+                            ;;["Navigation (xref)"
+                            ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
+                            ;; ("d" "definition" xref-find-definitions)
+                            ;; the rest of the functions below do work well but just use the default `xref` keybindings for consistency.
+                            ;; ("r" "references" xref-find-references) `M-?`
+                            ;; ("b" "back" xref-go-back) `M-,`
+                            ;; ("f" "forward" xref-go-forward)] `M-C-,`
 
-(keymap-global-set "C-c d" #'my/menu-diagnostics)
+                            ["Eglot"
+                             ("r" "rename symbol" eglot-rename)
+                             ("a" "code actions" eglot-code-actions)
+                             ("f" "format buffer" eglot-format)
+                             ("s" "restart server" eglot-reconnect)]])
 
-(transient-define-prefix my/menu-lsp ()
-  "LSP"
-  [
-   ;;["Navigation (xref)"
-   ;; `xref-find-definitions` can't ID the symbol at point when called from here for some reason; use `M-,` instead.
-   ;; ("d" "definition" xref-find-definitions)
-   ;; the rest of the functions below do work well but just use the default `xref` keybindings for consistency.
-   ;; ("r" "references" xref-find-references) `M-?`
-   ;; ("b" "back" xref-go-back) `M-,`
-   ;; ("f" "forward" xref-go-forward)] `M-C-,`
-
-   ["Eglot"
-    ("r" "rename symbol" eglot-rename)
-    ("a" "code actions" eglot-code-actions)
-    ("f" "format buffer" eglot-format)
-    ("s" "restart server" eglot-reconnect)]])
-
-(keymap-global-set "C-c l" #'my/menu-lsp)
+  :bind
+  (("C-c g" . my/menu-general)
+   ("C-c r" . my/menu-search-replace)
+   ("C-c d" . my/menu-diagnostics)
+   ("C-c l" . my/menu-lsp)))
