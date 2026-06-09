@@ -39,14 +39,14 @@
   "terminal.integrated.initialHint": false,
   "remote.autoForwardPortsSource": "hybrid",
   "notebook.output.wordWrap": true,
-  "window.zoomLevel": 0.5,
+  // "window.zoomLevel": 0.5,
   "workbench.navigationControl.enabled": false,
   "workbench.browser.showInTitleBar": false,
   "workbench.layoutControl.enabled": false,
 
   // ############################## AI ##############################
   "chat.mcp.gallery.enabled": false,
-  "claudeCode.preferredLocation": "panel",
+  "claudeCode.preferredLocation": "sidebar",
   "github.copilot.enable": {
     "*": false,
   },
@@ -71,11 +71,6 @@
   // BASH
   "[shellscript]": {
     "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode",
-  },
-
-  // HTML
-  "[html]": {
-    "editor.defaultFormatter": "vscode.html-language-features",
   },
 
   // DOCKER
@@ -236,4 +231,5 @@
       "value": "#42b883",
     },
   ],
+  "xml.server.vmargs": "-Xmx128M",
 }
