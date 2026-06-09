@@ -88,6 +88,11 @@
   ;; Column boundary
   (fill-column 120)
 
+  ;; Kill previous dired buffer when navigating to another folder from within the same dired buffer.
+  ;; e.g.: original dired -> ~/.config/; go into ~/.config/emacs -> single dired buffer for ~/.config/emacs/.
+  ;; Note this does NOT kill new dired buffers opened with C-x d (or from some other activation sources).
+  (dired-kill-when-opening-new-dired-buffer t)
+
   :bind
   (("C-x f" . find-file)
    ("C-x C-b" . buffer-menu)
@@ -117,8 +122,6 @@
   :ensure nil
   
   :custom
-  ;; prevent org from modifying the whitespace inside your code blocks
-  ;;(org-src-preserve-indentation t)
   ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
   (org-edit-src-content-indentation 0)
   (org-directory "~/org")
