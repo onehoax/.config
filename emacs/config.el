@@ -176,6 +176,9 @@
   :hook
   (eshell-mode . my/corfu-enable-eshell))
 
+(use-package project
+  :ensure nil)
+
 (use-package exec-path-from-shell
   :if (daemonp)
   
