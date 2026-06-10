@@ -53,7 +53,7 @@
   (pixel-scroll-precision-mode t)
 
   ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
-  (global-auto-revert-mode 1)
+  (global-auto-revert-mode t)
 
   ;; Automatic pairing of delimeters
   (electric-pair-mode t)
@@ -87,6 +87,9 @@
   
   ;; Column boundary
   (fill-column 120)
+
+  ;; Refresh non-file buffers (dired) when content is updated by other processes
+  (global-auto-revert-non-file-buffers t)
 
   ;; Kill previous dired buffer when navigating to another folder from within the same dired buffer.
   ;; e.g.: original dired -> ~/.config/; go into ~/.config/emacs -> single dired buffer for ~/.config/emacs/.
@@ -150,12 +153,9 @@
      "#+AUTHOR: Andres Osorio" n
      "#+DESCRIPTION: " n
      "#+DATE: " (format-time-string "%Y-%m-%d") n
-     "#+STARTUP: content" n n
-     "* TABLE OF CONTENTS :toc:" n n)
-   "<oh"))
-
-(use-package toc-org
-  :hook (org-mode . toc-org-mode))
+     "#+STARTUP: content" n
+     "#+EXPORT_FILE_NAME: ~/org/exports/" n n)
+   "<h"))
 
 (defun my/corfu-minibuffer-p ()
   (not (or (bound-and-true-p mct--active)

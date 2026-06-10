@@ -1,24 +1,8 @@
 #+TITLE: GNU Emacs Config
 #+AUTHOR: Andres Osorio
-#+DESCRIPTION: Personal Emacs config.
+#+DESCRIPTION: Personal Emacs config
 #+STARTUP: content
-
-* TABLE OF CONTENTS :toc:
-- [[#general][GENERAL]]
-  - [[#lexical-binding][LEXICAL BINDING]]
-  - [[#daemon-client][DAEMON-CLIENT]]
-  - [[#package-manager][PACKAGE MANAGER]]
-  - [[#settings][SETTINGS]]
-- [[#org][ORG]]
-  - [[#general-1][GENERAL]]
-  - [[#tempo][TEMPO]]
-  - [[#toc][TOC]]
-- [[#auto-completion][AUTO-COMPLETION]]
-- [[#project][PROJECT]]
-- [[#lsp][LSP]]
-  - [[#import-shell-env][Import Shell Env]]
-  - [[#jsts][JS+TS]]
-- [[#transient-maps][TRANSIENT MAPS]]
+#+EXPORT_FILE_NAME: ~/org/exports/emacs-config
 
 * GENERAL
 
@@ -112,7 +96,7 @@ alias emacs='ec'
   (pixel-scroll-precision-mode t)
 
   ;; Refresh buffer contents when corresponding file is saved to disk from somewhere else
-  (global-auto-revert-mode 1)
+  (global-auto-revert-mode t)
 
   ;; Automatic pairing of delimeters
   (electric-pair-mode t)
@@ -146,6 +130,9 @@ alias emacs='ec'
   
   ;; Column boundary
   (fill-column 120)
+
+  ;; Refresh non-file buffers (dired) when content is updated by other processes
+  (global-auto-revert-non-file-buffers t)
 
   ;; Kill previous dired buffer when navigating to another folder from within the same dired buffer.
   ;; e.g.: original dired -> ~/.config/; go into ~/.config/emacs -> single dired buffer for ~/.config/emacs/.
@@ -219,16 +206,9 @@ alias emacs='ec'
      "#+AUTHOR: Andres Osorio" n
      "#+DESCRIPTION: " n
      "#+DATE: " (format-time-string "%Y-%m-%d") n
-     "#+STARTUP: content" n n
-     "* TABLE OF CONTENTS :toc:" n n)
-   "<oh"))
-#+end_src
-
-** TOC
-
-#+begin_src emacs-lisp
-(use-package toc-org
-  :hook (org-mode . toc-org-mode))
+     "#+STARTUP: content" n
+     "#+EXPORT_FILE_NAME: ~/org/exports/" n n)
+   "<h"))
 #+end_src
 
 * AUTO-COMPLETION
