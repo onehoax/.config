@@ -155,7 +155,7 @@
      "#+DATE: " (format-time-string "%Y-%m-%d") n
      "#+STARTUP: content" n
      "#+EXPORT_FILE_NAME: ~/org/exports/" n n)
-   "<h"))
+   "<oh"))
 
 (defun my/corfu-minibuffer-p ()
   (not (or (bound-and-true-p mct--active)

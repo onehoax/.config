@@ -208,7 +208,7 @@ alias emacs='ec'
      "#+DATE: " (format-time-string "%Y-%m-%d") n
      "#+STARTUP: content" n
      "#+EXPORT_FILE_NAME: ~/org/exports/" n n)
-   "<h"))
+   "<oh"))
 #+end_src
 
 * AUTO-COMPLETION
