@@ -282,3 +282,7 @@
    ("C-c r" . my/menu-search-replace)
    ("C-c d" . my/menu-diagnostics)
    ("C-c l" . my/menu-lsp)))
+
+(use-package markdown-mode
+  :custom
+  (markdown-command "pandoc"))

@@ -369,3 +369,11 @@ Eglot Setup:
    ("C-c d" . my/menu-diagnostics)
    ("C-c l" . my/menu-lsp)))
 #+end_src
+
+* MARKDOWN
+
+#+begin_src emacs-lisp
+(use-package markdown-mode
+  :custom
+  (markdown-command "pandoc"))
+#+end_src
