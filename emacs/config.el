@@ -30,6 +30,12 @@
 (defun my/shell-mode-setup ()
   (display-line-numbers-mode 0))
 
+(defun my/project-name ()
+  "Return the current project name, or nil if not in a project."
+  (when-let ((project (project-current nil)))
+    (file-name-nondirectory
+     (directory-file-name (project-root project)))))
+
 (use-package emacs
   :ensure nil
 
@@ -41,7 +47,6 @@
 
    ;; Don't display continuation lines (don't wrap lines)
    truncate-lines t)
-   
 
   :config
   ;; Theme
@@ -99,6 +104,15 @@
   ;; e.g.: original dired -> ~/.config/; go into ~/.config/emacs -> single dired buffer for ~/.config/emacs/.
   ;; Note this does NOT kill new dired buffers opened with C-x d (or from some other activation sources).
   (dired-kill-when-opening-new-dired-buffer t)
+
+  ;; Override frame title to show `<buffer-name> | <project-name>'
+  (frame-title-format
+   '(:eval
+     (if-let ((project-name (my/project-name)))
+         (format "%s | %s"
+                 (buffer-name)
+                 project-name)
+       (buffer-name))))
 
   :bind
   (("C-x f" . find-file)
