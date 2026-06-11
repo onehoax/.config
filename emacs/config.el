@@ -113,6 +113,12 @@
   ;; Disable line numbers in shell buffers
   (shell-mode . my/shell-mode-setup))
 
+(use-package windmove
+  :ensure nil
+
+  :config
+  (windmove-default-keybindings))
+
 (defun my/org-no-angle-brackets ()
   (let ((old-predicate electric-pair-inhibit-predicate))
     (setq-local electric-pair-inhibit-predicate
@@ -229,19 +235,30 @@
   (transient-define-prefix my/menu-general ()
                            "General"
                            [["Buffer"
-                             ("e" "evaluate buffer (elisp)" eval-buffer)
-                             ("k" "kill buffer" kill-buffer)]
+                             ("be" "evaluate buffer (elisp)" eval-buffer)
+                             ("bk" "kill buffer" kill-buffer)]
 
                             ["Config"
-                             ("c" "open config.org"
+                             ("cc" "open config.org"
                               (lambda ()
                                 (interactive)
                                 (find-file "~/.config/emacs/config.org")))
-                             ("t" "open todo.org"
+                             ("ct" "open todo.org"
                               (lambda ()
                                 (interactive)
                                 (find-file "~/org/todo.org")))
-                             ("i" "evaluate init.el" my/eval-init)]])
+                             ("ci" "evaluate init.el" my/eval-init)]
+
+                            ["Preview"
+                             ("vm" "markdown preview" markdown-preview)]
+
+                            ["Pairs"
+                             ("sd" "delete-pair" delete-pair)]
+
+                            ["Transform"
+                             ("tu" "upcase char" upcase-char)
+                             ("tU" "upcase dwim" upcase-dwim)
+                             ("tl" "downcase dwim" downcase-dwim)]])
 
   (transient-define-prefix my/menu-search-replace ()
                            "Search & Replace"
@@ -285,4 +302,5 @@
 
 (use-package markdown-mode
   :custom
+  ;; `pandoc` has to be installed separately
   (markdown-command "pandoc"))
