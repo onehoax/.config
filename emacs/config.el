@@ -182,9 +182,7 @@
    "<oh"))
 
 (defun my/corfu-minibuffer-p ()
-  (not (or (bound-and-true-p mct--active)
-           (bound-and-true-p vertico--input)
-           (eq (current-local-map) read-passwd-map))))
+  (not (eq (current-local-map) read-passwd-map)))
 
 (defun my/corfu-enable-eshell ()
   (setq-local corfu-auto nil)
