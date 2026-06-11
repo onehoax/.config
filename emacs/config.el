@@ -10,8 +10,6 @@
 
 (require 'use-package)
 
-(setq use-package-always-ensure t)
-
 (defun my/fix-scratch-margin ()
   (with-current-buffer "*scratch*"
     (kill-local-variable 'left-margin-width)
@@ -37,8 +35,6 @@
      (directory-file-name (project-root project)))))
 
 (use-package emacs
-  :ensure nil
-
   :init
   (setq-default
    ;; Tabs to spaces and width
@@ -132,8 +128,6 @@
   (shell-mode . my/shell-mode-setup))
 
 (use-package windmove
-  :ensure nil
-
   :config
   (windmove-default-keybindings))
 
@@ -146,8 +140,6 @@
                     (funcall old-predicate c))))))
 
 (use-package org
-  :ensure nil
-  
   :custom
   ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
   (org-edit-src-content-indentation 0)
@@ -160,8 +152,6 @@
   (org-mode . org-indent-mode))
 
 (use-package org-tempo
-  :ensure nil
-  
   :after org
   
   :config
@@ -189,6 +179,8 @@
   (corfu-mode))
 
 (use-package corfu
+  :ensure t
+  
   :init
   (global-corfu-mode)
 
@@ -198,18 +190,20 @@
   :hook
   (eshell-mode . my/corfu-enable-eshell))
 
-(use-package project
-  :ensure nil)
+(use-package project)
+
+(use-package magit
+  :ensure t)
 
 (use-package exec-path-from-shell
+  :ensure t
+  
   :if (daemonp)
   
   :config
   (exec-path-from-shell-initialize))
 
 (use-package eglot
-  :ensure nil
-
   :init
   ;; File associations
   (dolist (association '(("\\.ts\\'" . typescript-ts-mode)
@@ -245,8 +239,6 @@
     (message "Reloaded init.el")))
 
 (use-package transient
-  :ensure nil
-
   :config
   (transient-define-prefix my/menu-general ()
                            "General"
@@ -321,6 +313,8 @@
    ("C-c l" . my/menu-lsp)))
 
 (use-package markdown-mode
+  :ensure t
+  
   :custom
   ;; `pandoc` has to be installed separately
   (markdown-command "pandoc"))

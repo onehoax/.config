@@ -48,8 +48,6 @@ alias emacs='ec'
 (package-initialize)
 
 (require 'use-package)
-
-(setq use-package-always-ensure t)
 #+end_src
 
 ** SETTINGS
@@ -80,8 +78,6 @@ alias emacs='ec'
      (directory-file-name (project-root project)))))
 
 (use-package emacs
-  :ensure nil
-
   :init
   (setq-default
    ;; Tabs to spaces and width
@@ -181,8 +177,6 @@ alias emacs='ec'
 
 #+begin_src emacs-lisp
 (use-package windmove
-  :ensure nil
-
   :config
   (windmove-default-keybindings))
 #+end_src
@@ -201,8 +195,6 @@ alias emacs='ec'
                     (funcall old-predicate c))))))
 
 (use-package org
-  :ensure nil
-  
   :custom
   ;; keep some org-mode formatting features but want the code content to start at the absolute beginning of the line
   (org-edit-src-content-indentation 0)
@@ -219,8 +211,6 @@ alias emacs='ec'
 
 #+begin_src emacs-lisp
 (use-package org-tempo
-  :ensure nil
-  
   :after org
   
   :config
@@ -252,6 +242,8 @@ alias emacs='ec'
   (corfu-mode))
 
 (use-package corfu
+  :ensure t
+  
   :init
   (global-corfu-mode)
 
@@ -265,8 +257,14 @@ alias emacs='ec'
 * PROJECT
 
 #+begin_src emacs-lisp
-(use-package project
-  :ensure nil)
+(use-package project)
+#+end_src
+
+* MAGIT
+
+#+begin_src emacs-lisp
+(use-package magit
+  :ensure t)
 #+end_src
 
 * LSP
@@ -277,6 +275,8 @@ Need this so that emacs daemon sees asdf executables:
 
 #+begin_src emacs-lisp
 (use-package exec-path-from-shell
+  :ensure t
+  
   :if (daemonp)
   
   :config
@@ -296,8 +296,6 @@ Eglot Setup:
 
 #+begin_src emacs-lisp
 (use-package eglot
-  :ensure nil
-
   :init
   ;; File associations
   (dolist (association '(("\\.ts\\'" . typescript-ts-mode)
@@ -337,8 +335,6 @@ Eglot Setup:
     (message "Reloaded init.el")))
 
 (use-package transient
-  :ensure nil
-
   :config
   (transient-define-prefix my/menu-general ()
                            "General"
@@ -419,6 +415,8 @@ Eglot Setup:
 
 #+begin_src emacs-lisp
 (use-package markdown-mode
+  :ensure t
+  
   :custom
   ;; `pandoc` has to be installed separately
   (markdown-command "pandoc"))
