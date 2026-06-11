@@ -34,10 +34,14 @@
   :ensure nil
 
   :init
-  ;; Tabs to spaces and width
   (setq-default
+   ;; Tabs to spaces and width
    indent-tabs-mode nil
-   tab-width 2)
+   tab-width 2
+
+   ;; Don't display continuation lines (don't wrap lines)
+   truncate-lines t)
+   
 
   :config
   ;; Theme
@@ -250,7 +254,7 @@
                              ("ci" "evaluate init.el" my/eval-init)]
 
                             ["Preview"
-                             ("vm" "markdown preview" markdown-preview)]
+                             ("vm" "markdown" markdown-preview)]
 
                             ["Pairs"
                              ("sd" "delete-pair" delete-pair)]
@@ -258,7 +262,11 @@
                             ["Transform"
                              ("tu" "upcase char" upcase-char)
                              ("tU" "upcase dwim" upcase-dwim)
-                             ("tl" "downcase dwim" downcase-dwim)]])
+                             ("tl" "downcase dwim" downcase-dwim)]
+
+                            ["Compare"
+                             ("df" "files" ediff-files)
+                             ("df" "buffers" ediff-buffers)]])
 
   (transient-define-prefix my/menu-search-replace ()
                            "Search & Replace"
