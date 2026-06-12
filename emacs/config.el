@@ -199,6 +199,13 @@
    "git branch -vv | awk '/: gone]/ {print $1}' | xargs -r git branch -D")
   (magit-refresh))
 
+(defun my/magit-refresh-vc-state ()
+  "Refresh VC state after Magit operations."
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and buffer-file-name vc-mode)
+        (vc-refresh-state)))))
+
 (use-package magit
   :ensure t
 
@@ -206,7 +213,21 @@
   (transient-append-suffix
     'magit-branch
     "k"
-    '("p" "prune gone branches" my/magit-prune-gone)))
+    '("p" "prune gone branches" my/magit-prune-gone))
+
+  :custom
+  ;; Highlight whitespace changes in diffs
+  (magit-diff-paint-whitespace t)
+  ;; Show detailed changes (e.g.: whitespace, etc.) in diffs
+  (magit-diff-refine-hunk 'all)
+  ;; Show whitespace changes in diffs when refine diff (above) is on
+  (magit-diff-refine-ignore-whitespace nil)
+
+  :hook
+  ;; Auto-refresh magit status when tracked files are modified
+  (after-save . magit-after-save-refresh-status)
+  ;; Refresh VC state for git changes (e.g.: branch change, etc.) to be reflected on buffer modeline
+  (magit-post-refresh . my/magit-refresh-vc-state))
 
 (use-package exec-path-from-shell
   :ensure t
