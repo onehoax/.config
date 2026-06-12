@@ -26,5 +26,3 @@
 	ff = only
 [pull]
 	ff = only
-[remote]
-  pushDefault = origin
