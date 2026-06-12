@@ -229,6 +229,23 @@
   ;; Refresh VC state for git changes (e.g.: branch change, etc.) to be reflected on buffer modeline
   (magit-post-refresh . my/magit-refresh-vc-state))
 
+(use-package diff-hl
+  :ensure t
+
+  :init
+  (global-diff-hl-mode t)
+  (diff-hl-margin-mode t)
+
+  :config
+  (set-face-attribute 'diff-hl-change nil :background "yellow4" :foreground "yellow")
+
+  :hook
+  ;; Refresh indicators after magit operations (commits, staging, etc.)
+  (magit-post-refresh . diff-hl-magit-post-refresh)
+
+  ;; Display indicators on dired too
+  (dired-mode . diff-hl-dired-mode))
+
 (use-package exec-path-from-shell
   :ensure t
   
