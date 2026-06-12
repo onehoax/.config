@@ -192,8 +192,21 @@
 
 (use-package project)
 
+(defun my/magit-prune-gone ()
+  "Delete local branches whose upstream no longer exists."
+  (interactive)
+  (shell-command
+   "git branch -vv | awk '/: gone]/ {print $1}' | xargs -r git branch -D")
+  (magit-refresh))
+
 (use-package magit
-  :ensure t)
+  :ensure t
+
+  :config
+  (transient-append-suffix
+    'magit-branch
+    "k"
+    '("p" "prune gone branches" my/magit-prune-gone)))
 
 (use-package exec-path-from-shell
   :ensure t
