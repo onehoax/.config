@@ -222,6 +222,8 @@
   (magit-diff-refine-hunk 'all)
   ;; Show whitespace changes in diffs when refine diff (above) is on
   (magit-diff-refine-ignore-whitespace nil)
+  ;; Don't show diff again when committing
+  (magit-commit-show-diff nil)
 
   :hook
   ;; Auto-refresh magit status when tracked files are modified
