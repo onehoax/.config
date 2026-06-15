@@ -112,7 +112,6 @@
 
   :bind
   (("C-x f" . find-file)
-   ("C-x C-b" . buffer-menu)
    ("C-c w" . my/copy-line)
    ("C-c s" . shell)
    ("C-;" . completion-at-point))
@@ -130,6 +129,32 @@
 (use-package windmove
   :config
   (windmove-default-keybindings))
+
+(use-package ibuffer
+  :custom
+  ;; Don't ask for confirmation on dangerous ops
+  (ibuffer-expert t)
+  ;; Don't show empty groups (groups which don't have any active buffers)
+  (ibuffer-show-empty-filter-groups nil)
+  (ibuffer-saved-filter-groups
+   '(("default"
+      ("dired"   (mode . dired-mode))
+      ("org"     (mode . org-mode))
+      ("help"    (mode . help-mode))
+      ("magit"   (name . "^magit"))
+      ("emacs"   (or
+                  (name . "^\\*scratch\\*$")
+                  (name . "^\\*Messages\\*$")))
+      ("planner" (or
+                  (name . "^\\*Calendar\\*$")
+                  (name . "^\\*Org Agenda\\*"))))))
+
+  :bind
+  (("C-x C-b" . ibuffer))
+
+  :hook
+  (ibuffer-mode . (lambda ()
+                    (ibuffer-switch-to-saved-filter-groups "default"))))
 
 (defun my/org-no-angle-brackets ()
   (let ((old-predicate electric-pair-inhibit-predicate))
