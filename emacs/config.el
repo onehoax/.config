@@ -139,12 +139,18 @@
   (ibuffer-saved-filter-groups
    '(("default"
       ("dired"   (mode . dired-mode))
+      ("shell"   (or
+                  (mode . shell-mode)
+                  (mode . eshell-mode)))
       ("org"     (mode . org-mode))
       ("help"    (mode . help-mode))
       ("magit"   (name . "^magit"))
       ("emacs"   (or
                   (name . "^\\*scratch\\*$")
-                  (name . "^\\*Messages\\*$")))
+                  (name . "^\\*Messages\\*$")
+                  (name . "^\\*Completions\\*$")
+                  (mode . emacs-lisp-compilation-mode)
+                  (mode . special-mode)))
       ("planner" (or
                   (name . "^\\*Calendar\\*$")
                   (name . "^\\*Org Agenda\\*"))))))
@@ -279,6 +285,10 @@
   (magit-diff-refine-ignore-whitespace nil)
   ;; Don't show diff again when committing
   (magit-commit-show-diff nil)
+
+  :bind
+  (("M-]" . diff-hl-next-hunk)
+   ("M-[" . diff-hl-previous-hunk))
 
   :hook
   ;; Auto-refresh magit status when tracked files are modified
