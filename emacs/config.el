@@ -156,6 +156,32 @@
   (ibuffer-mode . (lambda ()
                     (ibuffer-switch-to-saved-filter-groups "default"))))
 
+(use-package popper
+  :ensure t
+
+  :after project
+
+  :init
+  (popper-mode t)
+  (popper-echo-mode t)
+
+  :custom
+  (popper-reference-buffers
+   '("\\*Messages\\*"
+     "Output\\*$"
+     "\\*Async Shell Command\\*"
+     "\\*Warnings\\*"
+     "\\*Backtrace\\*"
+     "\\*eldoc.*\\*"
+     help-mode
+     compilation-mode))
+ (popper-group-function #'popper-group-by-project)
+
+  :bind
+  (("C-`"   . popper-toggle)
+   ("M-`"   . popper-cycle)
+   ("C-M-`" . popper-toggle-type)))
+
 (defun my/org-no-angle-brackets ()
   (let ((old-predicate electric-pair-inhibit-predicate))
     (setq-local electric-pair-inhibit-predicate
