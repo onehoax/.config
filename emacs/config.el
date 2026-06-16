@@ -162,6 +162,14 @@
   (ibuffer-mode . (lambda ()
                     (ibuffer-switch-to-saved-filter-groups "default"))))
 
+(defun my/popper-display-right (buffer &optional _alist)
+  "Display popper windows on the right instead of the bottom (default)."
+  (display-buffer-in-side-window
+   buffer
+   '((side . right)
+     (slot . 0)
+     (window-width . 0.4))))
+
 (use-package popper
   :ensure t
 
@@ -184,8 +192,11 @@
      "^\\*shell.*\\*$"  shell-mode
      help-mode
      compilation-mode))
+ ;; Display popper windows relevant to project (poppers outside the project won't show)
  (popper-group-function #'popper-group-by-project)
+ ;; Used for default bottom popper windows - unsued as long as popper windows are displayed to the right (see below), but doesn't hurt to leave it on
  (popper-window-height 0.4)
+ (popper-display-function #'my/popper-display-right)
 
   :bind
   (("C-`"   . popper-toggle)
