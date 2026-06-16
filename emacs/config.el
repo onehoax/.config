@@ -174,6 +174,8 @@
      "\\*Backtrace\\*"
      "\\*eldoc.*\\*"
      "^magit"
+     "^\\*eshell.*\\*$" eshell-mode
+     "^\\*shell.*\\*$"  shell-mode
      help-mode
      compilation-mode))
  (popper-group-function #'popper-group-by-project)

@@ -233,6 +233,8 @@ alias emacs='ec'
      "\\*Backtrace\\*"
      "\\*eldoc.*\\*"
      "^magit"
+     "^\\*eshell.*\\*$" eshell-mode
+     "^\\*shell.*\\*$"  shell-mode
      help-mode
      compilation-mode))
  (popper-group-function #'popper-group-by-project)
@@ -360,6 +362,10 @@ alias emacs='ec'
   (magit-diff-refine-ignore-whitespace nil)
   ;; Don't show diff again when committing
   (magit-commit-show-diff nil)
+
+  :bind
+  (("M-]" . diff-hl-next-hunk)
+   ("M-[" . diff-hl-previous-hunk))
 
   :hook
   ;; Auto-refresh magit status when tracked files are modified
