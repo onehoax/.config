@@ -173,9 +173,11 @@
      "\\*Warnings\\*"
      "\\*Backtrace\\*"
      "\\*eldoc.*\\*"
+     "^magit"
      help-mode
      compilation-mode))
  (popper-group-function #'popper-group-by-project)
+ (popper-window-height 0.4)
 
   :bind
   (("C-`"   . popper-toggle)
