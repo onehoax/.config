@@ -101,6 +101,16 @@
   ;; Note this does NOT kill new dired buffers opened with C-x d (or from some other activation sources).
   (dired-kill-when-opening-new-dired-buffer t)
 
+  ;; Enable horizontal scrolling through mouse
+  (mouse-wheel-tilt-scroll t)
+
+  ;; Use ripgrep as backend instead of grep
+  ;; These first 2 only affect `M-x grep` and `M-x rgrep`
+  (grep-program "rg")
+  (grep-command "rg")
+  ;; For project.el grep commands
+  (xref-search-program 'ripgrep)
+
   ;; Override frame title to show `<buffer-name> | <project-name>'
   (frame-title-format
    '(:eval
@@ -149,6 +159,11 @@
                   (name . "^\\*scratch\\*$")
                   (name . "^\\*Messages\\*$")
                   (name . "^\\*Completions\\*$")
+                  (mode . grep-mode)
+                  (mode . reb-mode)
+                  (mode . occur-mode)
+                  (mode . debugger-mode)
+                  (mode . xref--xref-buffer-mode)
                   (mode . emacs-lisp-compilation-mode)
                   (mode . special-mode)))
       ("planner" (or
@@ -181,17 +196,20 @@
 
   :custom
   (popper-reference-buffers
-   '("\\*Messages\\*"
-     "Output\\*$"
-     "\\*Async Shell Command\\*"
-     "\\*Warnings\\*"
-     "\\*Backtrace\\*"
-     "\\*eldoc.*\\*"
+   '("^\\*Completions\\*$"
+     "^\\**RE-Builder\\*$"
      "^magit"
-     "^\\*eshell.*\\*$" eshell-mode
-     "^\\*shell.*\\*$"  shell-mode
+     debugger-mode
+     special-mode
+     eshell-mode
+     shell-mode
      help-mode
-     compilation-mode))
+     reb-mode
+     grep-mode
+     occur-mode
+     compilation-mode
+     emacs-lisp-compilation-mode
+     xref--xref-buffer-mode))
  ;; Display popper windows relevant to project (poppers outside the project won't show)
  (popper-group-function #'popper-group-by-project)
  ;; Used for default bottom popper windows - unsued as long as popper windows are displayed to the right (see below), but doesn't hurt to leave it on
@@ -403,7 +421,7 @@
 
   (transient-define-prefix my/menu-search-replace ()
                            "Search & Replace"
-                           [["Normal (All Instances After Cursor)"
+                           [["Normal (Literal Replacement Everywhere (After Point), No Confirmation)"
                              ("ns" "string matches" replace-string)
                              ("nr" "regex matches" replace-regexp)]
 
