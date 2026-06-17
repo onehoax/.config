@@ -69,6 +69,8 @@
   ;; Disabled commands by default
   (put 'narrow-to-region 'disabled nil)
   (put 'upcase-region 'disabled nil)
+  (put 'scroll-right 'disabled nil)
+  (put 'scroll-left 'disabled nil)
 
   :custom
   ;; The customize system in Emacs provides a user-friendly way to configure settings without directly editing init.el.
@@ -149,6 +151,7 @@
   (ibuffer-saved-filter-groups
    '(("default"
       ("dired"   (mode . dired-mode))
+      ("buffer"  (name . "^\\*Ibuffer-.*\\*$"))
       ("shell"   (or
                   (mode . shell-mode)
                   (mode . eshell-mode)))
@@ -159,10 +162,12 @@
                   (name . "^\\*scratch\\*$")
                   (name . "^\\*Messages\\*$")
                   (name . "^\\*Completions\\*$")
+                  (name . "^\\*EGLOT.*\\*$")
                   (mode . grep-mode)
                   (mode . reb-mode)
                   (mode . occur-mode)
                   (mode . debugger-mode)
+                  (mode . apropos-mode)
                   (mode . xref--xref-buffer-mode)
                   (mode . emacs-lisp-compilation-mode)
                   (mode . special-mode)))
@@ -198,6 +203,8 @@
   (popper-reference-buffers
    '("^\\*Completions\\*$"
      "^\\**RE-Builder\\*$"
+     "^\\*Ibuffer-.*\\*$"
+     "^\\*EGLOT.*\\*$"
      "^magit"
      debugger-mode
      special-mode
@@ -207,6 +214,7 @@
      reb-mode
      grep-mode
      occur-mode
+     apropos-mode
      compilation-mode
      emacs-lisp-compilation-mode
      xref--xref-buffer-mode))
