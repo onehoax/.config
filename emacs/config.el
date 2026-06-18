@@ -127,7 +127,7 @@
    ("C-c w" . my/copy-line)
    ("C-c s" . shell)
    ("C-;" . completion-at-point))
-  
+
   :hook
   ;; Left margin on scratch gets set to 2 on daemon+client setup for some reason - set it back to 0
   (emacs-startup . my/fix-scratch-margin)
@@ -141,6 +141,28 @@
 (use-package windmove
   :config
   (windmove-default-keybindings))
+
+(defun my/god-mode-update-cursor-type (&rest _)
+  (setq cursor-type (if god-local-mode 'box 'bar)))
+
+(use-package god-mode
+  :ensure t
+
+  :init
+  (god-mode-all 1)
+
+  :config
+  ;; Initialize startup state
+  (my/god-mode-update-cursor-type)
+
+  :bind
+  (("<escape>" . god-local-mode)
+   :map god-local-mode-map
+   ("." . repeat))
+
+  :hook
+  (god-mode-enabled . my/god-mode-update-cursor-type)
+  (god-mode-disabled . my/god-mode-update-cursor-type))
 
 (use-package ibuffer
   :custom
@@ -418,9 +440,11 @@
                             ["Pairs"
                              ("sd" "delete-pair" delete-pair)]
 
+                            ["Whitespace"
+                             ("w" "toggle whitespace mode" whitespace-mode)]
+
                             ["Transform"
-                             ("tu" "upcase char" upcase-char)
-                             ("tU" "upcase dwim" upcase-dwim)
+                             ("tu" "upcase dwim" upcase-dwim)
                              ("tl" "downcase dwim" downcase-dwim)]
 
                             ["Compare"

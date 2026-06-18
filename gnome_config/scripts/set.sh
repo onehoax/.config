@@ -4,7 +4,7 @@
 # Backup/restore groups of settings: dconf dump and dconf load
 # You can use dconf to set settings as well but gsettings is a better interface for setting
 
-gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:swap_lalt_lctl']"
+gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:swap_lalt_lctl', 'caps:escape']"
 gsettings set org.gnome.mutter.keybindings toggle-tiled-left "['<Super>Left']"
 gsettings set org.gnome.mutter.keybindings toggle-tiled-right "['<Super>Right']"
 gsettings set org.gnome.desktop.wm.keybindings close "['<Super>q']"
