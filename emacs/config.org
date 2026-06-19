@@ -517,7 +517,15 @@ Need this so that emacs daemon sees asdf executables:
 
 ** JS / TS
 
-Install js/ts server:
+Install js/ts serve. Note that since `asdf` is being used this will install the package ONLY
+for the global node version (~/.tool-versions); this means that for projects using other node
+versions you have to install `vtsls` for those other node versions.
+Another option is to hardcode the eglot server program to the global one (e.g.: `/home/andres/.asdf/installs/nodejs/24.11.0/bin/vtsls` instead of `vtsls`);
+This would mean that you'd always use the same version of the language server regardless of the project's node version,
+but unfortunately it doesn't work (feature differences between node, vtsls, and typescript).
+
+Keep in mind that regardless of the option chosen, the approach does not work on older versions of node (e.g.: < v16) because `vtsls` is not even available for such node versions.
+The best approach is option 1 and just work without LSP for projects whose node versions is < 16.
 
 #+begin_src bash :tangle no
 npm i -g @vtsls/language-server
