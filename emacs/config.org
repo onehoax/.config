@@ -501,7 +501,7 @@ alias emacs='ec'
 
 * LSP
 
-** Import Shell Env
+** IMPORT SHELL ENV
 
 Need this so that emacs daemon sees asdf executables:
 
@@ -515,24 +515,10 @@ Need this so that emacs daemon sees asdf executables:
   (exec-path-from-shell-initialize))
 #+end_src
 
-** JS / TS
+** EGLOT SETUP
 
-Install js/ts serve. Note that since `asdf` is being used this will install the package ONLY
-for the global node version (~/.tool-versions); this means that for projects using other node
-versions you have to install `vtsls` for those other node versions.
-Another option is to hardcode the eglot server program to the global one (e.g.: `/home/andres/.asdf/installs/nodejs/24.11.0/bin/vtsls` instead of `vtsls`);
-This would mean that you'd always use the same version of the language server regardless of the project's node version,
-but unfortunately it doesn't work (feature differences between node, vtsls, and typescript).
-
-Keep in mind that regardless of the option chosen, the approach does not work on older versions of node (e.g.: < v16) because `vtsls` is not even available for such node versions.
-The best approach is option 1 and just work without LSP for projects whose node versions is < 16.
-
-#+begin_src bash :tangle no
-npm i -g @vtsls/language-server
-npm list -g
-#+end_src
-
-Eglot Setup:
+- [[https://microsoft.github.io/language-server-protocol/specifications/lsp/3.18/specification/][LSP Specification]]
+- [[https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocument_onTypeFormatting][LSP - Document on type formatting]]
 
 #+begin_src emacs-lisp
 (use-package eglot
@@ -556,11 +542,38 @@ Eglot Setup:
                   typescript-ts-mode
                   tsx-ts-mode)
                  . ("vtsls" "--stdio")))
+
+  :custom
+  ;; Disable LSP on-type formatting.
+  ;;
+  ;; Some language servers (e.g. vtsls) implement the
+  ;; `documentOnTypeFormattingProvider` capability, which auto-formats
+  ;; when characters such as RET, ';' or '}' are typed. This can cause
+  ;; previous lines to be reindented even with `electric-indent-mode` disabled.
+  ;; This is an LSP capability, not an Eglot-specific feature.
+  (eglot-ignored-server-capabilities '(:documentOnTypeFormattingProvider))
   
   :hook
   ((js-ts-mode
     typescript-ts-mode
     tsx-ts-mode) . eglot-ensure))
+#+end_src
+
+** JS / TS
+
+Install js/ts serve. Note that since `asdf` is being used this will install the package ONLY
+for the global node version (~/.tool-versions); this means that for projects using other node
+versions you have to install `vtsls` for those other node versions.
+Another option is to hardcode the eglot server program to the global one (e.g.: `/home/andres/.asdf/installs/nodejs/24.11.0/bin/vtsls` instead of `vtsls`);
+This would mean that you'd always use the same version of the language server regardless of the project's node version,
+but unfortunately it doesn't work (feature differences between node, vtsls, and typescript).
+
+Keep in mind that regardless of the option chosen, the approach does not work on older versions of node (e.g.: < v16) because `vtsls` is not even available for such node versions.
+The best approach is option 1 and just work without LSP for projects whose node versions is < 16.
+
+#+begin_src bash :tangle no
+npm i -g @vtsls/language-server
+npm list -g
 #+end_src
 
 * TRANSIENT MAPS

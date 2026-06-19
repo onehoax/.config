@@ -426,6 +426,16 @@
                   typescript-ts-mode
                   tsx-ts-mode)
                  . ("vtsls" "--stdio")))
+
+  :custom
+  ;; Disable LSP on-type formatting.
+  ;;
+  ;; Some language servers (e.g. vtsls) implement the
+  ;; `documentOnTypeFormattingProvider` capability, which auto-formats
+  ;; when characters such as RET, ';' or '}' are typed. This can cause
+  ;; previous lines to be reindented even with `electric-indent-mode` disabled.
+  ;; This is an LSP capability, not an Eglot-specific feature.
+  (eglot-ignored-server-capabilities '(:documentOnTypeFormattingProvider))
   
   :hook
   ((js-ts-mode
