@@ -63,6 +63,9 @@
   ;; Automatic pairing of delimeters
   (electric-pair-mode t)
 
+  ;; Un/re-do window configs
+  (winner-mode t)
+
   ;; Replace selected region with input
   (delete-selection-mode t)
 
@@ -156,8 +159,9 @@
   (my/god-mode-update-cursor-type)
 
   :bind
-  (("<escape>" . god-local-mode)
+  (("<escape>" . (lambda () (interactive) (god-local-mode 1)))
    :map god-local-mode-map
+   ("i" . god-local-mode)
    ("." . repeat))
 
   :hook
@@ -185,10 +189,13 @@
                   (name . "^\\*Messages\\*$")
                   (name . "^\\*Completions\\*$")
                   (name . "^\\*EGLOT.*\\*$")
+                  (name . "^\\*[eE]diff.*\\*$")
+                  (name . "^\\*[dD]iff.*\\*$")
                   (mode . grep-mode)
                   (mode . reb-mode)
                   (mode . occur-mode)
                   (mode . debugger-mode)
+                  (mode . backtrace-mode)
                   (mode . apropos-mode)
                   (mode . xref--xref-buffer-mode)
                   (mode . emacs-lisp-compilation-mode)
@@ -227,11 +234,13 @@
      "^\\**RE-Builder\\*$"
      "^\\*Ibuffer-.*\\*$"
      "^\\*EGLOT.*\\*$"
+     "^\\*[eE]diff.*\\*$"
+     "^\\*[dD]iff.*\\*$"
+     "^\\*.+-shell\\*$"
      "^magit"
      debugger-mode
+     backtrace-mode
      special-mode
-     eshell-mode
-     shell-mode
      help-mode
      reb-mode
      grep-mode
@@ -290,6 +299,20 @@
      "#+STARTUP: content" n
      "#+EXPORT_FILE_NAME: ~/org/exports/" n n)
    "<oh"))
+
+(use-package dired
+  :bind
+  (:map dired-mode-map
+        ("=" . ediff-files)))
+
+(use-package ediff
+  :custom
+  (ediff-split-window-function #'split-window-horizontally)
+  (ediff-window-setup-function #'ediff-setup-windows-plain)
+  (ediff-keep-variants nil)
+
+  :hook
+  (ediff-quit . winner-undo))
 
 (defun my/corfu-minibuffer-p ()
   (not (eq (current-local-map) read-passwd-map)))
@@ -449,7 +472,7 @@
 
                             ["Compare"
                              ("df" "files" ediff-files)
-                             ("df" "buffers" ediff-buffers)]])
+                             ("db" "buffers" ediff-buffers)]])
 
   (transient-define-prefix my/menu-search-replace ()
                            "Search & Replace"

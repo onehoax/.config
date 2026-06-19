@@ -106,6 +106,9 @@ alias emacs='ec'
   ;; Automatic pairing of delimeters
   (electric-pair-mode t)
 
+  ;; Un/re-do window configs
+  (winner-mode t)
+
   ;; Replace selected region with input
   (delete-selection-mode t)
 
@@ -211,8 +214,9 @@ alias emacs='ec'
   (my/god-mode-update-cursor-type)
 
   :bind
-  (("<escape>" . god-local-mode)
+  (("<escape>" . (lambda () (interactive) (god-local-mode 1)))
    :map god-local-mode-map
+   ("i" . god-local-mode)
    ("." . repeat))
 
   :hook
@@ -246,10 +250,13 @@ alias emacs='ec'
                   (name . "^\\*Messages\\*$")
                   (name . "^\\*Completions\\*$")
                   (name . "^\\*EGLOT.*\\*$")
+                  (name . "^\\*[eE]diff.*\\*$")
+                  (name . "^\\*[dD]iff.*\\*$")
                   (mode . grep-mode)
                   (mode . reb-mode)
                   (mode . occur-mode)
                   (mode . debugger-mode)
+                  (mode . backtrace-mode)
                   (mode . apropos-mode)
                   (mode . xref--xref-buffer-mode)
                   (mode . emacs-lisp-compilation-mode)
@@ -292,11 +299,13 @@ alias emacs='ec'
      "^\\**RE-Builder\\*$"
      "^\\*Ibuffer-.*\\*$"
      "^\\*EGLOT.*\\*$"
+     "^\\*[eE]diff.*\\*$"
+     "^\\*[dD]iff.*\\*$"
+     "^\\*.+-shell\\*$"
      "^magit"
      debugger-mode
+     backtrace-mode
      special-mode
-     eshell-mode
-     shell-mode
      help-mode
      reb-mode
      grep-mode
@@ -365,6 +374,28 @@ alias emacs='ec'
      "#+STARTUP: content" n
      "#+EXPORT_FILE_NAME: ~/org/exports/" n n)
    "<oh"))
+#+end_src
+
+* DIRED
+
+#+begin_src emacs-lisp
+(use-package dired
+  :bind
+  (:map dired-mode-map
+        ("=" . ediff-files)))
+#+end_src
+
+* DIFF
+
+#+begin_src emacs-lisp
+(use-package ediff
+  :custom
+  (ediff-split-window-function #'split-window-horizontally)
+  (ediff-window-setup-function #'ediff-setup-windows-plain)
+  (ediff-keep-variants nil)
+
+  :hook
+  (ediff-quit . winner-undo))
 #+end_src
 
 * AUTO-COMPLETION
@@ -567,7 +598,7 @@ Eglot Setup:
 
                             ["Compare"
                              ("df" "files" ediff-files)
-                             ("df" "buffers" ediff-buffers)]])
+                             ("db" "buffers" ediff-buffers)]])
 
   (transient-define-prefix my/menu-search-replace ()
                            "Search & Replace"
