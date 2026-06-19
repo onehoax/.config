@@ -199,6 +199,7 @@
                   (mode . apropos-mode)
                   (mode . xref--xref-buffer-mode)
                   (mode . emacs-lisp-compilation-mode)
+                  (mode . native-comp-limple-mode)
                   (mode . special-mode)))
       ("planner" (or
                   (name . "^\\*Calendar\\*$")
@@ -236,7 +237,7 @@
      "^\\*EGLOT.*\\*$"
      "^\\*[eE]diff.*\\*$"
      "^\\*[dD]iff.*\\*$"
-     "^\\*.+-shell\\*$"
+     "^\\*.+-shell\\*.*"
      "^magit"
      debugger-mode
      backtrace-mode
@@ -248,6 +249,7 @@
      apropos-mode
      compilation-mode
      emacs-lisp-compilation-mode
+     native-comp-limple-mode
      xref--xref-buffer-mode))
  ;; Display popper windows relevant to project (poppers outside the project won't show)
  (popper-group-function #'popper-group-by-project)
