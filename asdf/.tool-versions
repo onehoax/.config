@@ -2,3 +2,4 @@ nodejs 24.11.0
 awscli 2.31.39
 uv 0.10.11
 python 3.14.0
+deno 2.8.3
