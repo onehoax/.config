@@ -6,8 +6,10 @@
 [user]
   name = Andres Osorio
   email = andres.osoriogr@gmail.com
+
 [includeIf "gitdir:~/dev/work/ndg/"]
   path = ~/.config/git/work.ndg.gitconfig
+
 [alias]
   co = checkout
   ci = commit
@@ -15,23 +17,34 @@
   br = branch -vv
   wt = worktree
   lg = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-  sh = show --ext-diff
   f  = fetch
   fp = fetch --prune
   prune-gone = "!git branch -vv | awk '/: gone]/ {print $1}' | xargs git branch -D"
   ac = "!f() { git add . && git commit -m \"$1\"; }; f"
+
 [init]
   defaultBranch = main
+
 [core]
   autocrlf = input
   excludesfile = ~/.config/git/.gitignore_global
+  pager = delta
+
 [merge]
   ff = only
+  conflictStyle = zdiff3
+
 [pull]
   ff = only
+
 [fetch]
   prune = true
-[diff]
-  # Opt-out for an individual command with --no-ext-diff
-  # e.g.: `git diff --no-ext-diff` to run normal git diff
-  external = difft
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  side-by-side
+  navigate = true  # use n and N to move between diff sections
+  dark = true      # or light = true, or omit for auto-detection
+
