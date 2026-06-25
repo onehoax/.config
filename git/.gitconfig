@@ -12,19 +12,26 @@
   co = checkout
   ci = commit
   st = status
-  br = branch
+  br = branch -vv
   wt = worktree
   lg = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  sh = show --ext-diff
+  f  = fetch
   fp = fetch --prune
   prune-gone = "!git branch -vv | awk '/: gone]/ {print $1}' | xargs git branch -D"
+  ac = "!f() { git add . && git commit -m \"$1\"; }; f"
 [init]
   defaultBranch = main
 [core]
   autocrlf = input
   excludesfile = ~/.config/git/.gitignore_global
 [merge]
-	ff = only
+  ff = only
 [pull]
-	ff = only
-#[fetch]
-#  prune = true
+  ff = only
+[fetch]
+  prune = true
+[diff]
+  # Opt-out for an individual command with --no-ext-diff
+  # e.g.: `git diff --no-ext-diff` to run normal git diff
+  external = difft
