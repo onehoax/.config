@@ -1,3 +1,6 @@
+# Need to declare language-server entries for some LSP providers for them to work, but not for others;
+# e.g.: need to declare language-server entry for `deno-lsp` for it to work BUT not for the ones provided
+# in `vscode-langservers-extracted` (`vscode-html/css-language-server`).
 [language-server.deno-lsp]
 command = "deno"
 args = ["lsp"]
@@ -25,11 +28,23 @@ file-types = ["html"]
 indent = { tab-width = 2, unit = "  " }
 formatter = { command = 'deno', args = ["fmt", "-", "--ext", "html" ] }
 auto-format = false
+language-servers = [ { name = "html-lsp", except-features = [ "format" ] } ]
 
+# Declaring a language-server entry for `vscode-css-language-server` or
+# a separate language entry for `scss` turns off the language server for it for some reason
 [[language]]
 name = "css"
 file-types = ["css", "scss"]
 indent = { tab-width = 2, unit = "  " }
 formatter = { command = "deno", args = ["fmt", "-", "--ext", "css" ] }
-auto-format = true
+auto-format = false
+language-servers = [ { name = "vscode-css-language-server", except-features = [ "format" ] } ]
+
+[[language]]
+name = "json"
+file-types = ["json"]
+indent = { tab-width = 2, unit = "  " }
+formatter = { command = "deno", args = ["fmt", "-", "--ext", "json" ] }
+auto-format = false
+language-servers = [ { name = "vscode-json-language-server", except-features = [ "format" ] } ]
 
