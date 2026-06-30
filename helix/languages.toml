@@ -26,17 +26,23 @@ language-servers = ["deno-lsp"]
 name = "html"
 file-types = ["html"]
 indent = { tab-width = 2, unit = "  " }
-formatter = { command = 'deno', args = ["fmt", "-", "--ext", "html" ] }
+formatter = { command = "deno", args = [
+  "fmt", "--config", "/home/andres/.config/deno/deno.json", "-", "--ext", "html"
+] }
 auto-format = false
-language-servers = [ { name = "html-lsp", except-features = [ "format" ] } ]
+language-servers = [ { name = "vscode-html-language-server", except-features = [ "format" ] } ]
 
 # Declaring a language-server entry for `vscode-css-language-server` or
-# a separate language entry for `scss` turns off the language server for it for some reason
+# a separate language entry for `scss` turns off the language server for it for some reason;
+# both the vscode LSP and deno's formatter work fine for `scss` with this setup even though
+# `hx --health scss` shows no formatter configured for it
 [[language]]
 name = "css"
 file-types = ["css", "scss"]
 indent = { tab-width = 2, unit = "  " }
-formatter = { command = "deno", args = ["fmt", "-", "--ext", "css" ] }
+formatter = { command = "deno", args = [
+  "fmt", "--config", "/home/andres/.config/deno/deno.json", "-", "--ext", "css"
+] }
 auto-format = false
 language-servers = [ { name = "vscode-css-language-server", except-features = [ "format" ] } ]
 
@@ -44,7 +50,19 @@ language-servers = [ { name = "vscode-css-language-server", except-features = [ 
 name = "json"
 file-types = ["json"]
 indent = { tab-width = 2, unit = "  " }
-formatter = { command = "deno", args = ["fmt", "-", "--ext", "json" ] }
+formatter = { command = "deno", args = [
+  "fmt", "--config", "/home/andres/.config/deno/deno.json", "-", "--ext", "json"
+] }
 auto-format = false
 language-servers = [ { name = "vscode-json-language-server", except-features = [ "format" ] } ]
+
+[[language]]
+name = "markdown"
+file-types = ["md"]
+indent = { tab-width = 2, unit = "  " }
+formatter = { command = "deno", args = [
+  "fmt", "--config", "/home/andres/.config/deno/deno.json", "-", "--ext", "md"
+] }
+auto-format = false
+language-servers = []
 

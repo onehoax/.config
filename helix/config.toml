@@ -1,8 +1,14 @@
-theme = "onedark"
+# dracula, everforest_dark, focus_nova, varua, tokyonight-moon/storm
+theme = "everforest_dark"
 
 [editor]
 mouse = false
+cursorline = true
+color-modes = true
 shell = ["bash", "-ic"]
+text-width = 120
+rulers = [120]
+trim-trailing-whitespace = true
 #default-yank-register = "+"
 
 [editor.cursor-shape]
@@ -31,6 +37,6 @@ space = "·"
 nbsp = "⍽"
 nnbsp = "␣"
 tab = "→"
-newline = "⏎" 
+newline = "⏎"
 tabpad = "·" # Tabs will look like "→···" (depending on tab width)
 
