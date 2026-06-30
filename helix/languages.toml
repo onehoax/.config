@@ -11,16 +11,22 @@ name = "typescript"
 roots = ["deno.json", "deno.jsonc", "package.json"]
 file-types = ["ts", "tsx"]
 indent = { tab-width = 2, unit = "  " }
+formatter = { command = "deno", args = [
+  "fmt", "--config", "/home/andres/.config/deno/deno.json", "-", "--ext", "ts"
+] }
 auto-format = false
-language-servers = ["deno-lsp"]
+language-servers = [ { name = "deno-lsp", except-features = ["format"] } ]
 
 [[language]]
 name = "javascript"
 roots = ["deno.json", "deno.jsonc", "package.json"]
 file-types = ["js", "jsx"]
 indent = { tab-width = 2, unit = "  " }
+formatter = { command = "deno", args = [
+  "fmt", "--config", "/home/andres/.config/deno/deno.json", "-", "--ext", "js"
+] }
 auto-format = false
-language-servers = ["deno-lsp"]
+language-servers = [ { name = "deno-lsp", except-features = ["format"] } ]
 
 [[language]]
 name = "html"
