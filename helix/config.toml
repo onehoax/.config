@@ -11,6 +11,9 @@ rulers = [120]
 trim-trailing-whitespace = true
 #default-yank-register = "+"
 
+[editor.smart-tab]
+enable = false
+
 [editor.cursor-shape]
 insert = "bar"
 normal = "block"
@@ -18,6 +21,20 @@ select = "underline"
 
 [editor.file-picker]
 hidden = false
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "read-only-indicator", "file-modification-indicator"]
+center = ["file-type", "separator", "spacer", "version-control"]
+right = ["diagnostics", "selections", "register", "file-encoding", "file-line-ending", "position",  "position-percentage", "spacer"]
+separator = "•"
+
+[editor.whitespace.characters]
+space = "·"
+nbsp = "⍽"
+nnbsp = "␣"
+tab = "→"
+newline = "⏎"
+tabpad = "·" # Tabs will look like "→···" (depending on tab width)
 
 [keys.normal]
 esc = ["collapse_selection", "keep_primary_selection"]
@@ -27,12 +44,4 @@ X = "extend_line_above"
 "." = ":config-reload"
 w = ":w"
 q = ":bc"
-
-[editor.whitespace.characters]
-space = "·"
-nbsp = "⍽"
-nnbsp = "␣"
-tab = "→"
-newline = "⏎"
-tabpad = "·" # Tabs will look like "→···" (depending on tab width)
 
