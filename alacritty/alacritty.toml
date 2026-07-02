@@ -23,5 +23,6 @@ vi_mode_style = { shape = "Block", blinking =  "Off" }
 [keyboard]
 bindings = [
   { key = "N", mods = "Control|Shift", action = "SpawnNewInstance" },
+  { key = "P", mode = "Vi", action = "Paste" }
 ]
 
