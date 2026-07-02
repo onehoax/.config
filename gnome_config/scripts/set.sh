@@ -6,7 +6,8 @@
 
 gsettings set org.gnome.settings-daemon.plugins.media-keys screensaver "[]"
 
-gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:swap_lalt_lctl', 'caps:escape']"
+# gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:swap_lalt_lctl', 'caps:escape']"
+gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:hyper_capscontrol']"
 
 gsettings set org.gnome.mutter.keybindings toggle-tiled-left "['<Super>h']"
 gsettings set org.gnome.mutter.keybindings toggle-tiled-right "['<Super>l']"

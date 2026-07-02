@@ -5,7 +5,7 @@ live_config_reload = true
 padding = { x = 8, y = 5 }
 dynamic_padding = true
 decorations = "None"
-opacity = 0.9
+# opacity = 0.9
 startup_mode = "Maximized"
 
 [font]
@@ -23,6 +23,7 @@ vi_mode_style = { shape = "Block", blinking =  "Off" }
 [keyboard]
 bindings = [
   { key = "N", mods = "Control|Shift", action = "SpawnNewInstance" },
+  { key = "F2", action = "ToggleViMode" },
   { key = "P", mode = "Vi", action = "Paste" }
 ]
 
