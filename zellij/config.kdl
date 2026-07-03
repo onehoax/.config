@@ -316,12 +316,13 @@ default_mode "locked"
 // The name of the default layout to load on startup
 // Default: "default"
 //
-// default_layout "compact"
+// default_layout "/home/andres/.config/zellij/layouts/my_default.kdl"
+default_layout "my_default"
 
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 //
-// layout_dir "~/.config/zellij/layouts"
+layout_dir "/home/andres/.config/zellij/layouts"
 
 // The folder in which Zellij will look for themes
 // (Requires restart)
@@ -405,7 +406,7 @@ mouse_mode false
 // otherwise this will error if such a session exists.
 // Default: <RANDOM>
 //
-// session_name "My singleton session"
+// session_name "my_default"
 
 // When `session_name` is provided, attaches to that session
 // if it is already running or creates it otherwise.

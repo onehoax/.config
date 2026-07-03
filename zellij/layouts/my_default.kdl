@@ -1,9 +1,33 @@
 layout {
-    pane size=1 borderless=true {
-        plugin location="tab-bar"
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="tab-bar"
+        }
+        children
+        pane size=1 borderless=true {
+            plugin location="status-bar"
+        }
     }
-    pane
-    pane size=1 borderless=true {
-        plugin location="status-bar"
+
+    tab name="config" cwd="~/.config" split_direction="vertical" focus=true {
+        pane name="editor" command="hx" size="60%" focus=true
+        pane stacked=true size="40%" {
+            pane name="htop" command="htop"
+            pane name="git" expanded=true
+            pane name="alacritty" cwd="alacritty"
+            pane name="zellij" cwd="zellij"
+            pane name="helix" cwd="helix"
+        }
+    }
+    tab name="ndg-info" cwd="~/dev/work/ndg/info" split_direction="vertical" {
+        pane name="editor" command="hx" size="60%" focus=true {
+            args "README.md"
+        }
+        pane stacked=true size="40%" {
+            pane name="git" expanded=true
+            pane name="vpn" cwd="vpn"
+            pane name="db" cwd="db/instances"
+            pane name="glow" command="glow"
+        }
     }
 }
