@@ -140,13 +140,6 @@ keybinds clear-defaults=true {
             }
             SwitchToMode "locked"
         }
-        bind "s" {
-            LaunchOrFocusPlugin "zellij:share" {
-                floating true
-                move_to_focused_tab true
-            }
-            SwitchToMode "locked"
-        }
         bind "w" {
             LaunchOrFocusPlugin "session-manager" {
                 floating true
@@ -175,6 +168,14 @@ keybinds clear-defaults=true {
         bind "Alt o" { MoveTab "right"; }
         bind "Alt p" { TogglePaneInGroup; }
         bind "Alt Shift p" { ToggleGroupMarking; }
+        // bind "Alt ;" {
+        //     LaunchOrFocusPlugin "strider" {
+        //         floating true
+        //         move_to_focused_tab true
+        //         close_on_selection true
+        //     }
+        //     SwitchToMode "locked"
+        // }
     }
     shared_except "locked" "renametab" "renamepane" {
         bind "F1" { SwitchToMode "locked"; }
@@ -246,6 +247,7 @@ plugins {
     filepicker location="zellij:strider" {
         cwd "/"
     }
+    layout-manager location="zellij:layout-manager"
     plugin-manager location="zellij:plugin-manager"
     session-manager location="zellij:session-manager"
     status-bar location="zellij:status-bar"
@@ -319,7 +321,7 @@ default_mode "locked"
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 //
-// layout_dir "/tmp"
+// layout_dir "~/.config/zellij/layouts"
 
 // The folder in which Zellij will look for themes
 // (Requires restart)
@@ -333,7 +335,7 @@ default_mode "locked"
 //   - true (default)
 //   - false
 //
-// mouse_mode false
+mouse_mode false
 
 // Toggle having pane frames around the panes
 // Options:
@@ -461,6 +463,7 @@ default_mode "locked"
 // Default: true (if the host terminal supports it)
 //
 // support_kitty_keyboard_protocol false
+
 // Whether to make sure a local web server is running when a new Zellij session starts.
 // This web server will allow creating new sessions and attaching to existing ones that have
 // opted in to being shared in the browser.
@@ -477,6 +480,7 @@ default_mode "locked"
 // Default: false
 //
 // web_server false
+//
 // Whether to allow sessions started in the terminal to be shared through a local web server, assuming one is
 // running (see the `web_server` option for more details).
 // (Requires restart)
@@ -525,7 +529,7 @@ default_mode "locked"
 
 // Whether to enable mouse hover effects and pane grouping functionality
 // default is true
-// advanced_mouse_actions false
+advanced_mouse_actions false
 
 // Whether to enable mouse hover visual effects (frame highlight and help text)
 // default is true
