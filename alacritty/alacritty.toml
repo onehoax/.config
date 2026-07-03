@@ -1,5 +1,14 @@
 [general]
 live_config_reload = true
+import = [
+  # "~/.config/alacritty/themes/dracula-default.toml",
+  # "~/.config/alacritty/themes/catppuccin-frappe.toml",
+  # "~/.config/alacritty/themes/one-dark.toml",
+  # "~/.config/alacritty/themes/zenbones-forestbones-dark.toml",
+  # "~/.config/alacritty/themes/zenbones-kanagawabones.toml",
+  # "~/.config/alacritty/themes/zenbones-tokyobones-dark.toml",
+  "~/.config/alacritty/themes/zenbones-duckbones.toml",
+]
 
 [window]
 padding = { x = 8, y = 5 }

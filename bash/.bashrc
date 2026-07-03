@@ -47,7 +47,8 @@ fi
 
 export PATH="$HOME/.local/bin:$PATH"
 #export WHOME="/mnt/c/Users/andres"
-export EDITOR=vim
+export EDITOR=hx
+export VISUAL=hx
 
 # asdf
 export PATH="$HOME/.asdf/shims:$PATH"

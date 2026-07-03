@@ -1,5 +1,5 @@
-# dracula, everforest_dark, focus_nova, varua, tokyonight-moon/storm
-theme = "everforest_dark"
+# base16_default, dracula, bogster, everforest_dark, focus_nova, peachpuff, varua, tokyonight-moon/storm
+theme = "focus_nova"
 
 [editor]
 mouse = false
