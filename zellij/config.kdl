@@ -317,7 +317,7 @@ default_mode "locked"
 // Default: "default"
 //
 // default_layout "/home/andres/.config/zellij/layouts/my_default.kdl"
-default_layout "my_default"
+default_layout "personal"
 
 // The folder in which Zellij will look for layouts
 // (Requires restart)
@@ -336,7 +336,7 @@ layout_dir "/home/andres/.config/zellij/layouts"
 //   - true (default)
 //   - false
 //
-mouse_mode false
+// mouse_mode false
 
 // Toggle having pane frames around the panes
 // Options:
@@ -534,7 +534,7 @@ advanced_mouse_actions false
 
 // Whether to enable mouse hover visual effects (frame highlight and help text)
 // default is true
-// mouse_hover_effects false
+mouse_hover_effects false
 
 // Whether to show visual bell indicators (pane/tab frame flash and [!] suffix)
 // default is true
@@ -542,7 +542,7 @@ advanced_mouse_actions false
 
 // Whether to focus panes on mouse hover
 // default is false
-// focus_follows_mouse false
+focus_follows_mouse true
 
 // Whether clicking a pane to focus it also sends the click into the pane
 // default is false

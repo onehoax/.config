@@ -43,6 +43,7 @@
   "workbench.browser.showInTitleBar": false,
   "workbench.layoutControl.enabled": false,
   "editor.wordWrap": "off",
+  "workbench.editor.showTabs": "none",
 
   // ############################## AI ##############################
   "chat.mcp.gallery.enabled": false,
@@ -133,6 +134,10 @@
     {
       "before": ["<leader>", "e"],
       "commands": ["workbench.action.toggleSidebarVisibility"],
+    },
+    {
+      "before": ["<leader>", "o"],
+      "commands": ["workbench.files.action.focusOpenEditorsView"],
     },
     // BOOKMARKS
     {
@@ -231,5 +236,4 @@
       "value": "#42b883",
     },
   ],
-  "xml.server.vmargs": "-Xmx128M",
 }

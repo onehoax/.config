@@ -111,10 +111,6 @@
     "command": "-workbench.action.findInFiles"
   },
   {
-    "key": "ctrl+g t",
-    "command": "todo-tree-view.focus"
-  },
-  {
     "key": "ctrl+g b",
     "command": "bookmarksExplorer.focus"
   },
