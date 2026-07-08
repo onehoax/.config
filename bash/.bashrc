@@ -54,6 +54,9 @@ export VISUAL=hx
 export PATH="$HOME/.asdf/shims:$PATH"
 . <(asdf completion bash)
 
+# claude
+export CLAUDE_CONFIG_DIR="$HOME/.config/claude/personal"
+
 # npm
 #. ~/.npm-completion
 

@@ -23,8 +23,8 @@ select = "underline"
 hidden = false
 
 [editor.statusline]
-left = ["mode", "spinner", "file-name", "read-only-indicator", "file-modification-indicator"]
-center = ["file-type", "separator", "spacer", "version-control"]
+left = ["mode", "file-name", "read-only-indicator", "file-modification-indicator"]
+center = ["spinner", "file-type", "separator", "spacer", "version-control"]
 right = ["diagnostics", "selections", "register", "file-encoding", "file-line-ending", "position",  "position-percentage", "spacer"]
 separator = "•"
 

@@ -15,6 +15,7 @@ layout {
         }
         pane stacked=true size="40%" {
             pane name="git" expanded=true
+            pane name="claude"
             pane name="vpn" cwd="vpn"
             pane name="db" cwd="db/instances"
             pane name="glow" command="glow"

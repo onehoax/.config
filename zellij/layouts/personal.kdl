@@ -12,11 +12,16 @@ layout {
     tab name="config" cwd="~/.config" split_direction="vertical" focus=true {
         pane name="editor" command="hx" size="60%" focus=true
         pane stacked=true size="40%" {
-            pane name="htop" command="htop"
             pane name="git" expanded=true
+            pane name="claude"
             pane name="alacritty" cwd="alacritty"
             pane name="zellij" cwd="zellij"
             pane name="helix" cwd="helix"
         }
+    }
+
+    tab name="general" cwd="~/" split_direction="vertical" {
+        pane name="alacritty" size="60%" focus=true
+        pane name="htop" command="htop" size="40%"
     }
 }

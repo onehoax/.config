@@ -13,6 +13,7 @@ layout {
         pane name="editor" size="60%" focus=true
         pane stacked=true size="40%" {
             pane name="git" expanded=true
+            pane name="claude"
         }
     }
 }

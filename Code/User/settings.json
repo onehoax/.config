@@ -43,11 +43,10 @@
   "workbench.browser.showInTitleBar": false,
   "workbench.layoutControl.enabled": false,
   "editor.wordWrap": "off",
-  "workbench.editor.showTabs": "none",
+  // "workbench.editor.showTabs": "none",
 
   // ############################## AI ##############################
   "chat.mcp.gallery.enabled": false,
-  "claudeCode.preferredLocation": "sidebar",
   "github.copilot.enable": {
     "*": false,
   },
