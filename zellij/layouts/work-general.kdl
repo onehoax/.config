@@ -14,21 +14,22 @@ layout {
     // itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
     // as until they fix the bug
     tab name="info" cwd="~/dev/work/ndg" split_direction="vertical" hide_floating_panes=true {
-        pane name="editor" size="60%" focus=true
-        pane stacked=true size="40%" {
-            pane name="git" expanded=true
+        pane name="editor" size="65%" focus=true
+        pane stacked=true size="35%" {
+            pane name="general" expanded=true
+            pane name="serve"
         }
         floating_panes {
-            pane name="claude" {
+            pane name="git" focus=true {
                 width "95%"
                 height "90%"
             }
-            // pane name="other" {
-            //     x "4%"
-            //     y "9%"
-            //     width "95%"
-            //     height "90%"
-            // }
+            pane name="claude" {
+                x 7
+                y "8%"
+                width "95%"
+                height "90%"
+            }
         }
     }
 }

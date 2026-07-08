@@ -14,26 +14,26 @@ layout {
     // itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
     // as until they fix the bug
     tab name="info" cwd="~/dev/work/ndg/info" split_direction="vertical" hide_floating_panes=true {
-        pane name="editor" command="hx" size="60%" focus=true {
+        pane name="editor" command="hx" size="65%" focus=true {
             args "README.md"
         }
-        pane stacked=true size="40%" {
-            pane name="git" expanded=true
+        pane stacked=true size="35%" {
+            pane name="general" expanded=true
             pane name="vpn" cwd="vpn"
             pane name="db" cwd="db/instances"
-            pane name="glow" command="glow"
         }
         floating_panes {
-            pane name="claude" {
+            pane name="git" command="git" start_suspended=true focus=true {
+                args "st"
                 width "95%"
                 height "90%"
             }
-            // pane name="other" {
-            //     x "4%"
-            //     y "9%"
-            //     width "95%"
-            //     height "90%"
-            // }
+            pane name="claude" {
+                x 7
+                y "8%"
+                width "95%"
+                height "90%"
+            }
         }
     }
 }

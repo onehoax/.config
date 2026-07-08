@@ -10,12 +10,19 @@ layout {
     }
 
     tab name="config" cwd="~/.config" split_direction="vertical" focus=true {
-        pane name="editor" command="hx" size="60%" focus=true
-        pane stacked=true size="40%" {
-            pane name="git" expanded=true
+        pane name="editor" command="hx" size="65%" focus=true
+        pane stacked=true size="35%" {
+            pane name="general" expanded=true
             pane name="alacritty" cwd="alacritty"
             pane name="zellij" cwd="zellij"
             pane name="helix" cwd="helix"
+        }
+        floating_panes {
+            pane name="git" command="git" start_suspended=true {
+                args "st"
+                width "95%"
+                height "90%"
+            }
         }
     }
 
@@ -24,7 +31,7 @@ layout {
     // itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
     // as until they fix the bug
     tab name="general" cwd="~/" split_direction="vertical" hide_floating_panes=true {
-        pane name="alacritty" size="60%" focus=true
+        pane name="misc" focus=true
         floating_panes {
             pane name="htop" command="htop" {
                 width "95%"
