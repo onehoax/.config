@@ -17,10 +17,14 @@
   br = branch -vv
   wt = worktree
   lg = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-  f  = fetch
+  f = fetch
   fp = fetch --prune
   prune-gone = "!git branch -vv | awk '/: gone]/ {print $1}' | xargs git branch -D"
   ac = "!f() { git add . && git commit -m \"$1\"; }; f"
+  # Replaces the most recent commit with a new one that includes whatever is currently staged;
+  # useful when you accidentally committed secrets and need to remove them from history as well
+  cia = commit --amend
+  cian = commit --amend --no-edit
 
 [init]
   defaultBranch = main
