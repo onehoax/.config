@@ -1,8 +1,3 @@
-// This layout is meant to be applied from the CLI, not directly from the `work` session.
-// Command: `zellij -s work action new-tab -l work-general -n <name> -c <path>`
-//     - <path>: `~` ONLY expands without quotes
-//     - e.g.: `zellij -s work action new-tab -l work-general -n epcon -c ~/dev/work/ndg/epcon-fe`
-//     - <name> and <cwd> are intentionally left out of the tab definition below so the command above works properly
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -17,15 +12,19 @@ layout {
     // `hide_floating_panes=true` doesn't work when `default_tab_template` is used - this is a bug that
     // has not been addressed in the zellij project; also putting the `tab-bar` and `status-bar` on the tab
     // itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
-    // as until they fix the bug.
-    tab split_direction="vertical" hide_floating_panes=true {
-        pane name="editor" size="65%" focus=true
+    // as until they fix the bug
+    tab name="misc" cwd="~/dev/work/ndg/misc" split_direction="vertical" hide_floating_panes=true {
+        pane name="editor" command="hx" size="65%" focus=true {
+            args "README.md"
+        }
         pane stacked=true size="35%" {
-            pane name="serve" expanded=true
-            pane name="general"
+            pane name="misc" expanded=true
+            pane name="vpn" cwd="vpn"
+            pane name="db" cwd="db/instances"
         }
         floating_panes {
-            pane name="git" focus=true {
+            pane name="git" command="git" start_suspended=true focus=true {
+                args "st"
                 width "98%"
                 height "93%"
             }
