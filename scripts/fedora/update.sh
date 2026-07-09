@@ -1,11 +1,14 @@
 #!/bin/bash
 
-dnf check-update
-sudo dnf upgrade --refresh -y
-sudo dnf autoremove -y && sudo dnf clean all -y
+# Make it available globaly through a soft link:
+#   `ln -s ~/.config/scripts/fedora/update.sh ~/.local/bin/fedora-update`
 
-flatpak update
-flatpak uninstall --unused
+sudo dnf upgrade --refresh -y
+sudo dnf autoremove -y
+sudo dnf clean all
+
+flatpak update -y
+flatpak uninstall --unused -y
 
 fwupdmgr refresh --force
 fwupdmgr get-updates

@@ -25,14 +25,14 @@ layout {
         floating_panes {
             pane name="git" command="git" start_suspended=true focus=true {
                 args "st"
-                width "95%"
-                height "90%"
+                width "98%"
+                height "93%"
             }
             pane name="claude" {
-                x 7
-                y "8%"
-                width "95%"
-                height "90%"
+                x 3
+                y "6%"
+                width "98%"
+                height "93%"
             }
         }
     }

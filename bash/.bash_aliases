@@ -9,3 +9,6 @@ alias ip-public='curl https://ipinfo.io'
 
 alias claude-work='CLAUDE_CONFIG_DIR="$HOME/.config/claude/work" claude'
 
+alias zp='zellij -n personal -s personal'
+alias zw='zellij -n work-info -s work'
+

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Make it available globaly through a soft link:
+#   `ln -s ~/.config/scripts/ipv6-toggle.sh ~/.local/bin/toggle-ipv6`
+
 set_ipv6() {
   local action="$1"
   local value="$2"
