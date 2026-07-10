@@ -16,6 +16,8 @@
     "command": "bash ~/.config/claude/statusline-command.sh"
   },
   "effortLevel": "medium",
+  "tui": "fullscreen",
   "theme": "dark",
-  "tui": "fullscreen"
+  "switchModelsOnFlag": false,
+  "useAutoModeDuringPlan": false
 }

@@ -35,7 +35,15 @@ else
   context_label="ctx n/a"
 fi
 
-# 4. Account email, from the config dir of the running instance
+# 4. Session cost so far, in USD.
+cost_usd=$(jq -r '.cost.total_cost_usd // empty' <<< "$input")
+if [ -n "$cost_usd" ]; then
+  cost_label=$(printf "\$%.2f" "$cost_usd")
+else
+  cost_label=""
+fi
+
+# 5. Account email, from the config dir of the running instance
 #    (CLAUDE_CONFIG_DIR points at either the "personal" or "work" profile).
 email=""
 if [ -n "$CLAUDE_CONFIG_DIR" ] && [ -f "$CLAUDE_CONFIG_DIR/.claude.json" ]; then
@@ -47,15 +55,9 @@ DIM=$'\033[2m'
 RESET=$'\033[0m'
 CYAN=$'\033[36m'
 
-if [ -n "$email" ]; then
-  printf "%s%s%s %s|%s %s %s|%s %s %s|%s %s\n" \
-    "$CYAN" "$model" "$RESET" \
-    "$DIM" "$RESET" "$effort_label" \
-    "$DIM" "$RESET" "$context_label" \
-    "$DIM" "$RESET" "$email"
-else
-  printf "%s%s%s %s|%s %s %s|%s %s\n" \
-    "$CYAN" "$model" "$RESET" \
-    "$DIM" "$RESET" "$effort_label" \
-    "$DIM" "$RESET" "$context_label"
-fi
+sep=" ${DIM}|${RESET} "
+line="${CYAN}${model}${RESET}${sep}${effort_label}${sep}${context_label}"
+[ -n "$cost_label" ] && line="${line}${sep}${cost_label}"
+[ -n "$email" ] && line="${line}${sep}${email}"
+
+printf "%s\n" "$line"
