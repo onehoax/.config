@@ -25,6 +25,8 @@
   # useful when you accidentally committed secrets and need to remove them from history as well
   cia = commit --amend
   cian = commit --amend --no-edit
+  # Show git diff while excluding the specified path; forwards remaining arguments to git diff.
+  diff-exclude = "!f() { exclude=\"$1\"; shift; git diff \"$@\" -- . \":(exclude)$exclude\"; }; f"
 
 [init]
   defaultBranch = main
