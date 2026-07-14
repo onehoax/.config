@@ -3,6 +3,11 @@
 //     - <path>: `~` ONLY expands without quotes
 //     - e.g.: `zellij -s work action new-tab -l work-general -n epcon -c ~/dev/work/ndg/epcon-fe`
 //     - <name> and <cwd> are intentionally left out of the tab definition below so the command above works properly
+//
+// `hide_floating_panes=true` doesn't work when `default_tab_template` is used - this is a bug that
+// has not been addressed in the zellij project; also putting the `tab-bar` and `status-bar` on the tab
+// itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
+// as until they fix the bug.
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -14,26 +19,29 @@ layout {
         }
     }
 
-    // `hide_floating_panes=true` doesn't work when `default_tab_template` is used - this is a bug that
-    // has not been addressed in the zellij project; also putting the `tab-bar` and `status-bar` on the tab
-    // itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
-    // as until they fix the bug.
     tab split_direction="vertical" hide_floating_panes=true {
-        pane name="editor" size="65%" focus=true
-        pane stacked=true size="35%" {
-            pane name="misc" expanded=true
-            pane name="serve"
-        }
+        // pane name="editor" size="65%" focus=true
+        // pane stacked=true size="35%" {
+        //     pane name="misc" expanded=true
+        //     pane name="serve"
+        // }
+
+        pane name="editor" command="hx" focus=true
         floating_panes {
-            pane name="git" focus=true {
+            pane name="misc" {
+                y "4%"
                 width "98%"
-                height "93%"
+                height "92%"
             }
-            pane name="claude" {
-                x 3
+            pane name="serve" {
                 y "6%"
                 width "98%"
-                height "93%"
+                height "92%"
+            }
+            pane name="claude" {
+                y "8%"
+                width "98%"
+                height "92%"
             }
         }
     }

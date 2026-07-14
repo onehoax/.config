@@ -542,7 +542,7 @@ mouse_hover_effects false
 
 // Whether to focus panes on mouse hover
 // default is false
-focus_follows_mouse true
+// focus_follows_mouse true
 
 // Whether clicking a pane to focus it also sends the click into the pane
 // default is false

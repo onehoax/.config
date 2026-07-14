@@ -1,3 +1,7 @@
+// `hide_floating_panes=true` doesn't work when `default_tab_template` is used - this is a bug that
+// has not been addressed in the zellij project; also putting the `tab-bar` and `status-bar` on the tab
+// itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
+// as until they fix the bug
 layout {
     default_tab_template {
         pane size=1 borderless=true {
@@ -10,26 +14,36 @@ layout {
     }
 
     tab name="config" cwd="~/.config" split_direction="vertical" focus=true {
-        pane name="editor" command="hx" size="65%" focus=true
-        pane stacked=true size="35%" {
-            pane name="misc" expanded=true
-            pane name="alacritty" cwd="alacritty"
-            pane name="zellij" cwd="zellij"
-            pane name="helix" cwd="helix"
-        }
+        // pane name="editor" command="hx" size="65%" focus=true
+        // pane stacked=true size="35%" {
+        //     pane name="misc" expanded=true
+        //     pane name="alacritty" cwd="alacritty"
+        //     pane name="zellij" cwd="zellij"
+        //     pane name="helix" cwd="helix"
+        // }
+        // floating_panes {
+        //     pane name="git" command="git" start_suspended=true {
+        //         args "st"
+        //         width "98%"
+        //         height "93%"
+        //     }
+        // }
+
+        pane name="editor" command="hx" focus=true
         floating_panes {
-            pane name="git" command="git" start_suspended=true {
-                args "st"
+            pane name="misc" {
                 width "98%"
                 height "93%"
             }
+            // pane name="git" {
+            //     x 3
+            //     y "6%"
+            //     width "98%"
+            //     height "93%"
+            // }
         }
     }
 
-    // `hide_floating_panes=true` doesn't work when `default_tab_template` is used - this is a bug that
-    // has not been addressed in the zellij project; also putting the `tab-bar` and `status-bar` on the tab
-    // itself to avoid using `default_tab_template` doesn't display properly for some reason - leaving it
-    // as until they fix the bug
     tab name="misc" cwd="~/" split_direction="vertical" hide_floating_panes=true {
         pane name="misc" focus=true
         floating_panes {
