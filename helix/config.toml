@@ -1,5 +1,5 @@
-# base16_default, dracula, bogster, everforest_dark, focus_nova, peachpuff, varua, tokyonight-moon/storm
-theme = "tokyonight-moon"
+# base16_default, dracula, bogster, everforest_dark, focus_nova, peachpuff, varua, tokyonight_moon/storm
+theme = "tokyonight_moon"
 
 [editor]
 cursorline = true
