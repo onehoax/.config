@@ -33,12 +33,12 @@ layout {
                 width "98%"
                 height "92%"
             }
-            pane name="claude" {
+            pane name="serve" {
                 y "6%"
                 width "98%"
                 height "92%"
             }
-            pane name="serve" {
+            pane name="claude" {
                 y "8%"
                 width "98%"
                 height "92%"
