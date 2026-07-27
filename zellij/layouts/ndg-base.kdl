@@ -13,6 +13,33 @@ layout {
         }
     }
 
+    tab_template name="repo-tab" hide_floating_panes=true {
+        pane size=1 borderless=true {
+            plugin location="tab-bar"
+        }
+        pane name="editor" command="hx" focus=true
+        floating_panes {
+            pane name="misc" {
+                y "4%"
+                width "98%"
+                height "92%"
+            }
+            pane name="serve" {
+                y "6%"
+                width "98%"
+                height "92%"
+            }
+            pane name="claude" {
+                y "8%"
+                width "98%"
+                height "92%"
+            }
+        }
+        pane size=1 borderless=true {
+            plugin location="status-bar"
+        }
+    }
+
     tab name="misc" cwd="~/dev/work/ndg/misc" split_direction="vertical" hide_floating_panes=true {
         // pane name="editor" command="hx" size="65%" focus=true {
         //     args "README.md"
@@ -41,4 +68,7 @@ layout {
             // pane name="db" cwd="db/instances"
         }
     }
+
+    repo-tab name="cms" split_direction="vertical" cwd="~/dev/work/ndg/ndg-cms"
+    repo-tab name="cms-fe" split_direction="vertical" cwd="~/dev/work/ndg/ndg-cms-fe"
 }

@@ -10,5 +10,5 @@ alias ip-public='curl https://ipinfo.io'
 alias claude-work='CLAUDE_CONFIG_DIR="$HOME/dev/work/ndg/misc/claude" claude'
 
 alias zp='zellij -n personal -s personal'
-alias zw='zellij -n ndg-misc -s work'
+alias zwndg='zellij -n ndg-base -s ndg'
 
