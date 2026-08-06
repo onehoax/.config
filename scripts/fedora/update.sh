@@ -14,4 +14,5 @@ fwupdmgr refresh --force
 fwupdmgr get-updates
 sudo fwupdmgr update
 
+rm ~/.bash_history-*
 rm ~/Pictures/Screenshots/*
