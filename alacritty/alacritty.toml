@@ -35,8 +35,8 @@ vi_mode_style = { shape = "Block", blinking =  "Off" }
 [keyboard]
 bindings = [
   { key = "N", mods = "Control|Shift", action = "SpawnNewInstance" },
-  { key = "F2", action = "ToggleViMode" },
   { key = "P", mode = "Vi", action = "Paste" },
-  { key = "Return", mods = "Shift", chars = "\n" }
+  { key = "Return", mods = "Shift", chars = "\n" },
+  { key = "F5", action = "ToggleViMode" }
 ]
 
