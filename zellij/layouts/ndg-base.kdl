@@ -22,17 +22,17 @@ layout {
             pane name="misc" {
                 y "4%"
                 width "98%"
-                height "92%"
+                height "93%"
             }
             pane name="serve" {
                 y "6%"
                 width "98%"
-                height "92%"
+                height "93%"
             }
             pane name="claude" {
                 y "8%"
                 width "98%"
-                height "92%"
+                height "93%"
             }
         }
         pane size=1 borderless=true {
@@ -41,31 +41,21 @@ layout {
     }
 
     tab name="misc" cwd="~/dev/work/ndg/misc" split_direction="vertical" hide_floating_panes=true {
-        // pane name="editor" command="hx" size="65%" focus=true {
-        //     args "README.md"
-        // }
-        // pane stacked=true size="35%" {
-        //     pane name="misc" expanded=true
-        //     pane name="vpn" cwd="vpn"
-        //     pane name="db" cwd="db/instances"
-        // }
-
         pane name="editor" command="hx" focus=true {
             args "README.md"
         }
         floating_panes {
             pane name="misc" {
+                y "4%"
                 width "98%"
-                height "93%"
+                height "95%"
             }
             pane name="claude" {
                 // x 3
                 y "6%"
                 width "98%"
-                height "93%"
+                height "95%"
             }
-            // pane name="vpn" cwd="vpn"
-            // pane name="db" cwd="db/instances"
         }
     }
 

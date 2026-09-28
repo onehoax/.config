@@ -28,6 +28,7 @@ keybinds clear-defaults=true {
         bind "x" { CloseFocus; SwitchToMode "locked"; }
         bind "z" { TogglePaneFrames; SwitchToMode "locked"; }
         bind "tab" { SwitchFocus; }
+        bind ";" { FocusLastPane; }
     }
     tab {
         bind "left" { GoToPreviousTab; }
@@ -328,6 +329,10 @@ layout_dir "/home/andres/.config/zellij/layouts"
 // (Requires restart)
 //
 // theme_dir "/tmp"
+
+pane_frame_style "full"
+
+stacked_pane_list false
 
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could
