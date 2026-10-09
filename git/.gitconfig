@@ -28,7 +28,7 @@
   # Show git diff while excluding the specified path; forwards remaining arguments to git diff.
   # diff-exclude = "!f() { exclude=\"$1\"; shift; git diff \"$@\" -- . \":(exclude)$exclude\"; }; f"
   # Show git diff excluding `package-lock.json`.
-  diff-exclude-lock = "!git diff -- . ':(exclude)package-lock.json'"
+  diff-exclude-lock = "!git diff -- . ':(exclude,glob)**/package-lock.json'"
 [init]
   defaultBranch = main
 

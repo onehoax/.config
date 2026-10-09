@@ -5,7 +5,7 @@ mouse: false
 # use pager to display markdown
 pager: true
 # word-wrap at width
-width: 120
+width: 200
 # show all files, including hidden and ignored.
 all: false
 # show line numbers (TUI-mode only)
