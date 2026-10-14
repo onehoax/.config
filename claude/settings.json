@@ -15,6 +15,7 @@
     "type": "command",
     "command": "bash ~/.config/claude/statusline-command.sh"
   },
+  "enabledPlugins": {},
   "effortLevel": "medium",
   "tui": "fullscreen",
   "theme": "dark",
