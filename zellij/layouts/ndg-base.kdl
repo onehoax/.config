@@ -56,6 +56,8 @@ layout {
                 width "98%"
                 height "95%"
             }
+            pane name="vpn" cwd="vpn"
+            pane name="db" cwd="db/instances"
         }
     }
 
