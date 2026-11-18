@@ -34,7 +34,6 @@
 
 [core]
   autocrlf = input
-  excludesfile = ~/.config/git/.gitignore_global
   pager = delta
 
 [merge]
