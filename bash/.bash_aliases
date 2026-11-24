@@ -12,3 +12,4 @@ alias claude-work='CLAUDE_CONFIG_DIR="$HOME/dev/work/ndg/misc/claude" claude'
 alias zp='zellij -n personal -s personal'
 alias zwndg='zellij -n ndg-base -s ndg'
 
+alias ndgawssso='aws sso login --sso-session ndg'
