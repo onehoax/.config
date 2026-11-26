@@ -241,7 +241,7 @@ sudo mount /dev/mapper/external_crypt /mnt/external
 sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top/
 
 # atomic send
-sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/external_data/fedora_snapshots/{root,home}/
+sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | pv | sudo btrfs receive /run/media/andres/external_data/fedora_snapshots/{root,home}/
 
 # verify with UUID - Received UUID of the one in external drive should be the same as UUID of the original one
 sudo btrfs subvolume show /mnt/btrfs-top/snapshots/root/root_2026-04-30_17_09/
