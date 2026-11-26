@@ -254,6 +254,7 @@ sudo btrfs send -p OLD_SNAPSHOT NEW_SNAPSHOT | btrfs receive DEST
 ## UMOUNT
 
 ```bash
+sudo umount /mnt/btrfs-top
 sudo umount /mnt/external
 sudo cryptsetup close external_crypt
 ```
