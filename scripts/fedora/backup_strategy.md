@@ -58,7 +58,7 @@ Backup strategy.
    ls -al /mnt/btrfs-top/snapshots/home/
    ```
 
-5. (Send snapshots to external drive)[#send-snapshots-to-external-drive]
+5. [Send snapshots to external drive](#send-snapshots-to-external-drive)
 
 6. Unmount top-level btrfs after changes have been made
 
