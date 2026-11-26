@@ -16,7 +16,7 @@ Backup strategy.
    sudo mkdir -p /mnt/btrfs-top
    ```
 
-2. Mount top-level btrfs tree (id 5)
+2. Mount top-level btrfs tree (btrfs reserves specific subvolume IDs - 5 is the top-level btrfs subvolume (filesystem root))
 
    ```bash
    # find encrypted disk partition after it has been unlocked (the real phyisical parition is `/dev/nvme0n1p6` - check with lsblk)
@@ -27,13 +27,13 @@ Backup strategy.
    sudo mount -o subvolid=5 /dev/mapper/luks-503a86d9-f195-4d8d-9a76-78ae4f3b7c84 /mnt/btrfs-top/
 
    # verify mount
-   ls -al /mnt/btrfs-top/ # should see `root` and `home`
-   sudo btrfs subvolume list / # note `var/lib/machines`
-   sudo btrfs subvolume list /mnt/btrfs-top # note `root/var/lib/machines`
+   ls -al /mnt/btrfs-top/ # should see `root`, `home`(, `snapshots` if already backed up before)
+   sudo btrfs subvolume list /
+   sudo btrfs subvolume list /mnt/btrfs-top
    mount | grep btrfs # note `subvolid=` and `subvol=`
    ```
 
-3. Create top-level snapshot subvolume
+3. Create top-level snapshot subvolume (if not already created)
 
    ```bash
    sudo btrfs subvolume create /mnt/btrfs-top/snapshots
@@ -58,7 +58,9 @@ Backup strategy.
    ls -al /mnt/btrfs-top/snapshots/home/
    ```
 
-5. Unmount top-level btrfs after changes have been made
+5. (Send snapshots to external drive)[#send-snapshots-to-external-drive]
+
+6. Unmount top-level btrfs after changes have been made
 
    ```bash
    sudo umount /mnt/btrfs-top
@@ -238,7 +240,7 @@ sudo mount /dev/mapper/external_crypt /mnt/external
 # mount top-level btrfs tree
 sudo mount -o subvolid=5 /dev/mapper/luks-... /mnt/btrfs-top/
 
-# first time send
+# atomic send
 sudo btrfs send /mnt/btrfs-top/snapshots/root/<snapshot_name> | sudo btrfs receive /run/media/andres/external_data/fedora_snapshots/{root,home}/
 
 # verify with UUID - Received UUID of the one in external drive should be the same as UUID of the original one
